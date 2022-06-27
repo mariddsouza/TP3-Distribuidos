@@ -58,8 +58,6 @@ class Cliente:
         listaUsuarios= []
         for k,v in dicionario.items():
             listaUsuarios.append(MapperUsuario.jsonToUsuario(json.loads(v)))
-
-
         self.tcp.close
         return listaUsuarios
 
