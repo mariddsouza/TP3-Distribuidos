@@ -27,7 +27,8 @@ class MapperUsuario:
         telefone:str=dicionario['telefone'] 
         email:str=dicionario['email']
         endereco:Endereco = MapperUsuario.jsonToEndereco(dicionario)
-        return Usuario(nome=nome,senha=senha,cpf=cpf,telefone=telefone,email=email,endereco=endereco)
+        return Usuario(nome=nome,senha=senha,cpf=cpf,telefone=telefone,email=email,endereco=endereco,
+        propostasFeitas=[],propostasRecebidas=[],moveis=[])
 
 
     def jsonToEndereco(dicionario:dict) -> Endereco:

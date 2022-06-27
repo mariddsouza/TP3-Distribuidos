@@ -5,9 +5,8 @@ class TipoOperacao(Enum):
     criarUsuario = 0
     buscarUsuario = 1
     alterarUsuario = 2
+    buscarTodosUsuarios = 3
 
-    proporTroca = 3
-    aceitarTroca = 4
-    recusarTroca = 5
-
-    buscarMovel = 6
+    proporTroca = 4
+    aceitarTroca = 5
+    recusarTroca = 6

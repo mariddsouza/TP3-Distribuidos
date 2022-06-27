@@ -1,3 +1,4 @@
+import json
 import socket
 from mappers.mapper_usuario import MapperUsuario
 from  models.tipo_operacao import TipoOperacao
@@ -18,12 +19,48 @@ class Cliente:
         self.tcp.connect(self.dest)
         dicionario: dict = MapperUsuario.usuarioToJson(usuario=usuario)
         dicionario['tipoOperacao']=TipoOperacao.criarUsuario.value
-        msg=str(dicionario)
+        msg=json.dumps(dicionario)
         self.tcp.send(msg.encode())
         self.tcp.close
+    
+    def buscarUsuario(self,cpf:int,senha:str)-> Usuario:
+        self.tcp.connect(self.dest)
+        dicionario:dict={}
+        dicionario['cpf']=cpf
+        dicionario['senha']=senha
+        dicionario['tipoOperaçao']=TipoOperacao.buscarUsuario.value
+        msg=json.dumps(dicionario)
+        self.tcp.send(msg.encode())
+        msg=self.tcp.recv(1024)
+        if not msg: return None
+        msg=json.loads(msg)
+        self.tcp.close
+        return MapperUsuario.jsonToUsuario(dict(msg))
+
+    def alterarUsuario(self,usuario:Usuario)-> None:
+        self.tcp.connect(self.dest)
+        dicionario: dict = MapperUsuario.usuarioToJson(usuario=usuario)
+        dicionario['tipoOperacao']=TipoOperacao.alterarUsuario.value
+        msg=json.dumps(dicionario)
+        self.tcp.send(msg.encode())
+        self.tcp.close
+    
+    def buscarTodosUsuarios(self)-> list:
+        self.tcp.connect(self.dest)
+        dicionario = {}
+        dicionario['tipoOperacao']=TipoOperacao.buscarTodosUsuarios.value
+        msg = json.dumps(dicionario)
+        self.tcp.send(msg.encode())
+        msg = self.tcp.recv(1024)
+        if not msg: return None
+        dicionario = json.loads(msg)
+        print(dicionario)
+        listaUsuarios= []
+        for k,v in dicionario.items():
+            listaUsuarios.append(MapperUsuario.jsonToUsuario(json.loads(v)))
 
 
-    # def receberMensagem(self):
-    #     pass
-    # def enviarMensagem(self):
-    #     pass
+        self.tcp.close
+        return listaUsuarios
+
+
