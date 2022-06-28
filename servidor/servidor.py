@@ -18,8 +18,7 @@ class Servidor:
         self.tcp.listen(1)
     
     def criarUsuario(self,usuario:Usuario )->int:
-        # inserirBanco(usuario)
-        return 1
+        return inserirBanco(usuario)
     
     def criarMovel(self,cpf:int,movel:Movel )->int:
         # inserir banco de dados
@@ -30,7 +29,7 @@ class Servidor:
         return 1
 
     def buscarUsuario(self,cpf:int, senha:str)->Usuario:
-        # buscarBanco(cpf)
+        buscarBanco(cpf)
         return Usuario(nome="nome",senha="senha",cpf=123)
 
     def alterarUsuario(self,usuario:Usuario):

@@ -27,7 +27,7 @@ while True:
         if tipoOperacao==TipoOperacao.buscarUsuario.value:
             usuario = servidor.buscarUsuario(senha=dicionario['senha'],cpf=dicionario['cpf'])
             if usuario is not None:
-                print("Entrei")
+                # print("Entrei")
                 msg =json.dumps(MapperUsuario.usuarioToJson(usuario=usuario))
         
                 con.send(msg.encode())
