@@ -1,4 +1,5 @@
 from cliente.cadastro import Cadastro
+from cliente.cliente import Cliente
 from cliente.cores import Cores
 from cliente.home import Home
 # from cliente.cliente import Cliente
@@ -15,6 +16,8 @@ while opLogin!=0:
     if opLogin == 1:
         usuario = Login.login()
         if usuario is not None:
+            usuario.propostasFeitas = Cliente.buscarPropostasRealizadas(usuario.cpf)
+            usuario.propostasRecebidas = Cliente.bus(usuario.cpf)
             print(cores.criarTextoSucesso("\nLogin realizado com sucesso!"))
             print(cores.criarTextoSucesso("Seja bem-vindo {}.\n".format(usuario.nome)))
             opHome = Home.menu()

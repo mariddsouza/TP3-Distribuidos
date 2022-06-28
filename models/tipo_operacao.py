@@ -13,3 +13,7 @@ class TipoOperacao(Enum):
     
     criarMovel = 7
     excluirMovel = 8
+    buscarMovel = 9
+
+    buscarPropostasRealizadas = 10
+    buscarPropostasRecebidas = 11

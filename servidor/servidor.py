@@ -1,6 +1,8 @@
 import socket
+from typing import List
 from cliente.cadastro import Cadastro
 from models.movel import Movel
+from models.proposta import Proposta
 
 from models.usuario import Usuario
 from banco.cadastro import inserirBanco
@@ -32,11 +34,29 @@ class Servidor:
         buscarBanco(cpf)
         return Usuario(nome="nome",senha="senha",cpf=123)
 
-    def alterarUsuario(self,usuario:Usuario):
-        atualizaBanco(usuario)
-        pass
+    # def alterarUsuario(self,usuario:Usuario):
+    #     atualizaBanco(usuario)
+    #     pass
 
-    def buscarTodosUsuarios()-> list:
+    def buscarTodosUsuarios()-> List[Usuario]:
         # Acesso ao banco    
+        pass
+    def buscarPropostasRealizadas(cpf:int)-> List[Proposta]:
+        # Buscar no banco as propostas realizadas a partir de um cpf
+        pass
+    def buscarPropostasRecebidas(cpf:int)-> List[Proposta]:
+        # Buscar no banco as propostas recebidas a partir de um cpf
+        pass
+    def buscarMovel(idMovel:int)->Movel:
+        # Buscar no banco as propostas recebidas a partir de um id
+        pass
+    def aceitarProposta():
+        # Aceita uma proposta a partir do ID da proposta
+        pass
+    def recusarProposta():
+         # Recusa uma proposta a partir do ID da proposta
+        pass
+    def fazerProposta():
+        # Cria uma proposta de forma a naloga a criar usuario
         pass
  

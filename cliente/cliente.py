@@ -1,8 +1,10 @@
 import json
 import socket
+from typing import List
 from mappers.mapper_movel import MapperMovel
 from mappers.mapper_usuario import MapperUsuario
 from models.movel import Movel
+from models.proposta import Proposta
 from models.status_resposta import StatusResposta
 from  models.tipo_operacao import TipoOperacao
 
@@ -86,7 +88,7 @@ class Cliente:
         dicionario: dict = {}
         dicionario['tipoOperacao']=TipoOperacao.excluirMovel.value
         dicionario['cpf']=cpf
-        dicionario['idMovel']=id
+        dicionario['idMovel']=idMovel
         msg=json.dumps(dicionario)
         self.tcp.send(msg.encode())
         msg=self.tcp.recv(1024)
@@ -94,5 +96,39 @@ class Cliente:
         if not msg: return StatusResposta.falha.value
         self.tcp.close
         return int(msg)
-
+    
+    def buscarPropostasRealizadas(self,cpf:int)->List[Proposta]:
+        self.tcp.connect(self.dest)
+        dicionario: dict = {}
+        dicionario['tipoOperacao']=TipoOperacao.buscarPropostasRealizadas.value
+        dicionario['cpf']=cpf
+        msg=json.dumps(dicionario)
+        self.tcp.send(msg.encode())
+        msg=self.tcp.recv(1024)
+        msg=msg.decode()
+        if not msg: return StatusResposta.falha.value
+        self.tcp.close
+        return int(msg)
+    
+    def buscarPropostasRecebidas(self,cpf:int)->List[Proposta]:
+        self.tcp.connect(self.dest)
+        dicionario: dict = {}
+        dicionario['tipoOperacao']=TipoOperacao.buscarPropostasRecebidas.value
+        dicionario['cpf']=cpf
+        msg=json.dumps(dicionario)
+        self.tcp.send(msg.encode())
+        msg=self.tcp.recv(1024)
+        msg=msg.decode()
+        if not msg: return StatusResposta.falha.value
+        self.tcp.close
+        return int(msg)
+    
+    def buscarMovel(self,idMovel:int):
+        pass
+    def aceitarProposta():
+        pass
+    def recusarProposta():
+        pass
+    def fazerProposta():
+        pass
 

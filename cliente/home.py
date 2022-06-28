@@ -62,7 +62,8 @@ class Home:
         return cliente.excluirMovel(cpf,idMovel=id)
     
     def mostrarPropostasRealizadas(cpf:int):
-        # cores=Cores()
+        cores=Cores()
+        propostasRealizadas= Cliente.propostaRealizadas
         # print("Você possui os seguintes móveis:")
         # propostas=[]
         # for proposta in propostas:

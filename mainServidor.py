@@ -27,11 +27,8 @@ while True:
         if tipoOperacao==TipoOperacao.buscarUsuario.value:
             usuario = servidor.buscarUsuario(senha=dicionario['senha'],cpf=dicionario['cpf'])
             if usuario is not None:
-                # print("Entrei")
                 msg =json.dumps(MapperUsuario.usuarioToJson(usuario=usuario))
-        
                 con.send(msg.encode())
-                
             else:
                 con.send(' '.encode())
 
@@ -69,14 +66,19 @@ while True:
             msg =json.dumps(dicionario)
             con.send(msg.encode())
 
-        elif tipoOperacao==TipoOperacao.proporTroca:
+        elif tipoOperacao==TipoOperacao.proporTroca.value:
             pass
 
-        elif tipoOperacao == TipoOperacao.aceitarTroca:
+        elif tipoOperacao == TipoOperacao.aceitarTroca.value:
             pass
 
-        elif tipoOperacao == TipoOperacao.recusarTroca:
+        elif tipoOperacao == TipoOperacao.recusarTroca.value:
             pass
+        elif tipoOperacao == TipoOperacao.buscarPropostasRealizadas.value:
+            pass
+        elif tipoOperacao == TipoOperacao.buscarPropostasRecebidas.value:
+            pass
+
         
     print ('Finalizando conexao do cliente', cliente)
     con.close()
