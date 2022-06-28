@@ -10,3 +10,6 @@ class TipoOperacao(Enum):
     proporTroca = 4
     aceitarTroca = 5
     recusarTroca = 6
+    
+    criarMovel = 7
+    excluirMovel = 8

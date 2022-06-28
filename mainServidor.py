@@ -2,6 +2,7 @@
 import json
 from mailbox import NotEmptyError
 import socket
+from mappers.mapper_movel import MapperMovel
 from mappers.mapper_usuario import MapperUsuario
 
 from models.tipo_operacao import TipoOperacao
@@ -22,10 +23,17 @@ while True:
         if not msg: break
         dicionario= json.loads(msg)
         tipoOperacao=dicionario['tipoOperacao']
+
         if tipoOperacao==TipoOperacao.buscarUsuario.value:
             usuario = servidor.buscarUsuario(senha=dicionario['senha'],cpf=dicionario['cpf'])
-            msg =json.dumps(MapperUsuario.usuarioToJson(usuario=usuario))
-            con.send(msg.encode())
+            if usuario is not None:
+                print("Entrei")
+                msg =json.dumps(MapperUsuario.usuarioToJson(usuario=usuario))
+        
+                con.send(msg.encode())
+                
+            else:
+                con.send(' '.encode())
 
         elif tipoOperacao==TipoOperacao.alterarUsuario.value:
             usuario = MapperUsuario.jsonToUsuario(dicionario) 
@@ -35,6 +43,13 @@ while True:
             usuario = MapperUsuario.jsonToUsuario(dicionario) 
             status=servidor.criarUsuario(usuario=usuario)
             msg=str(status)
+            con.send(msg.encode())
+
+        elif tipoOperacao == TipoOperacao.criarMovel.value:
+            movel = MapperMovel.jsonToMovel(dicionario=dicionario)
+            cpf=dicionario['cpf']
+            status = servidor.criarMovel(cpf=cpf,movel = movel)
+            msg=str(msg)
             con.send(msg.encode())
 
         elif tipoOperacao == TipoOperacao.buscarTodosUsuarios.value:

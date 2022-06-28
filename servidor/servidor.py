@@ -1,5 +1,6 @@
 import socket
 from cliente.cadastro import Cadastro
+from models.movel import Movel
 
 from models.usuario import Usuario
 from banco.cadastro import inserirBanco
@@ -16,13 +17,17 @@ class Servidor:
         self.tcp.bind(self.orig)
         self.tcp.listen(1)
     
-    def criarUsuario(self,usuario:Usuario )->None:
-        inserirBanco(usuario)
-        pass   
+    def criarUsuario(self,usuario:Usuario )->int:
+        # inserirBanco(usuario)
+        return 1
+    
+    def criarMovel(self,cpf:int,movel:Movel )->int:
+        # inserir banco de dados
+        return 1
 
     def buscarUsuario(self,cpf:int, senha:str)->Usuario:
-        buscarBanco(cpf)
-        pass
+        # buscarBanco(cpf)
+        return Usuario(nome="nome",senha="senha",cpf=123)
 
     def alterarUsuario(self,usuario:Usuario):
         atualizaBanco(usuario)
