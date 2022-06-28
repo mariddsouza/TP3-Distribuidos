@@ -30,6 +30,7 @@ def ExecutaSQL(conexao,sql):
 
 
 def inserirBanco(user:Usuario):
+    try:
 
         nome=user.nome
         senha=user.senha
@@ -37,10 +38,13 @@ def inserirBanco(user:Usuario):
         vsql="INSERT INTO tb_Cadastro(T_NOME,T_SENHA,T_CPF)VALUES('"+nome+"','"+senha+"','"+cpf+"')"
         ExecutaSQL(vcon,vsql)
 
-        #StatusProposta.aceito.value #Cadastrado com sucesso
-    
-        #StatusProposta.recusado.value #Erro no cadastro
 
+        StatusProposta.aceito.value #Cadastrado com sucesso
+        print("entrou aqui no certo")
+    except Error:
+    
+        StatusProposta.recusado.value #Erro no cadastro
+        print("entrou no errado")
 
 def buscarBanco(cpf:str):
     vsql="SELECT * FROM tb_Cadastro WHERE T_CPF == '"+cpf+"'; "
