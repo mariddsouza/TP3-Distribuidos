@@ -1,7 +1,8 @@
 import socket
+from cliente.cadastro import Cadastro
 
 from models.usuario import Usuario
-
+from banco.cadastro import inserirBanco
 
 class Servidor:
     def __init__(self) -> None:
@@ -14,10 +15,11 @@ class Servidor:
         self.tcp.listen(1)
     
     def criarUsuario(self,usuario:Usuario )->None:
-        # Acesso ao banco
+        inserirBanco(usuario)
         pass   
     def buscarUsuario(self,cpf:int, senha:str)->Usuario:
         # Acesso ao banco
+
         pass
     def alterarUsuario(self,usuario:Usuario):
         # Acesso ao banco

@@ -1,6 +1,11 @@
 import sqlite3
+import sys
+import os
 from sqlite3 import Error
+sys.path.append(os.path.abspath('./'))
+from models.usuario import Usuario
 
+#Conectando ou criando o banco 
 def ConexaoBanco():
     con=None
     try:
@@ -11,28 +16,53 @@ def ConexaoBanco():
 vcon = ConexaoBanco()
 
 
-nome=input("Inisra o Nome: ")
-senha=input("Inisra o Senha: ")
-endereco=input("Inisra o Endereco: ")
-telefone=input("Inisra o Telefone: ")
-email=input("Inisra o Email: ")
-cpf=input("Inisra o CPF: ")
-
-
-
-vsql="INSERT INTO tb_CadastroUser(T_NOME,T_SENHA,T_ENDERECO,T_TELEFONE,T_EMAIL,T_CPF)VALUES('"+nome+"','"+senha+"','"+endereco+"','"+telefone+"','"+email+"','"+cpf+"')"
-
-def inserir(conexao,sql):
+def ExecutaSQL(conexao,sql): 
     try:
-        print("aqui")
         c=conexao.cursor()
-        c.execute(sql)
+        var=c.execute(sql)
         conexao.commit()
-        print("entrooouuuu")
+        return var
     except Error as ex:
         print(ex)
 
-inserir(vcon,vsql)
+
+def inserirBanco(user:Usuario):
+    nome=user.nome
+    senha=user.senha
+    endereco=user.endereco
+    telefone=user.telefone
+    email=user.email
+    cpf=str(user.cpf)
+    vsql="INSERT INTO tb_CadastroUser(T_NOME,T_SENHA,T_ENDERECO,T_TELEFONE,T_EMAIL,T_CPF)VALUES('"+nome+"','"+senha+"','"+endereco+"','"+telefone+"','"+email+"','"+cpf+"')"
+    ExecutaSQL(vcon,vsql)
+
+    
+def buscarBanco(cpf:str):
+    vsql="SELECT * FROM tb_CadastroUser WHERE T_CPF == '"+cpf+"'; "
+    print(ExecutaSQL(vcon,vsql).fetchone())
+
+
+
+
+
+
+
+
+
+
+
+'''
+####TESTE PARA O BANCO########
+if __name__ == "__main__":
+    usuario = Usuario("nome", "senha", "endereco",
+                 "telefone", "email", 1205,
+                 "moveis", [], []) 
+    #inserirBanco(usuario)
+    buscarBanco(str(usuario.cpf))
+    print("deu bom")
+'''
+
+
 
 '''
 ####CRIANDO A TABELA DE CADASTRO########
@@ -58,3 +88,12 @@ def criarTabela(conexao,sql):
 criarTabela(vcon,vsql)
 '''
 
+
+'''
+nome=input("Inisra o Nome: ")
+senha=input("Inisra o Senha: ")
+endereco=input("Inisra o Endereco: ")
+telefone=input("Inisra o Telefone: ")
+email=input("Inisra o Email: ")
+cpf=input("Inisra o CPF: ")
+'''
