@@ -3,6 +3,8 @@ from cliente.cadastro import Cadastro
 
 from models.usuario import Usuario
 from banco.cadastro import inserirBanco
+from banco.cadastro import buscarBanco
+from banco.cadastro import atualizaBanco
 
 class Servidor:
     def __init__(self) -> None:
@@ -17,13 +19,15 @@ class Servidor:
     def criarUsuario(self,usuario:Usuario )->None:
         inserirBanco(usuario)
         pass   
-    def buscarUsuario(self,cpf:int, senha:str)->Usuario:
-        # Acesso ao banco
 
+    def buscarUsuario(self,cpf:int, senha:str)->Usuario:
+        buscarBanco(cpf)
         pass
+
     def alterarUsuario(self,usuario:Usuario):
-        # Acesso ao banco
+        atualizaBanco(usuario)
         pass
+
     def buscarTodosUsuarios()-> list:
         # Acesso ao banco    
         pass
