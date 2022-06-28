@@ -1,17 +1,21 @@
-from tkinter import *
-from turtle import color
-
+from cliente.cliente import Cliente
+from cliente.cores import Cores
+from models.usuario import Usuario
 
 class Cadastro:
-    def __init__(self, master=None) -> None:
+    def __init__(self) -> None:
         pass
     def menu() -> int:
-        print("---------- TELA DE CADASTRO ----------")
+        cores = Cores()
+        cliente : Cliente = Cliente()
+        print(cores.criarTextoTela("---------- TELA DE CADASTRO ----------"))
         print()
         print("Insira os seus dados abaixo:")
-        nome = input("Nome:")
-        cpf = input("CPF:")
-        senha = input("Senha:")
+        nome = input(cores.criarTextoOpcoes("Nome: "))
+        cpf = input(cores.criarTextoOpcoes("CPF: "))
+        senha = input(cores.criarTextoOpcoes("Senha: "))
+        usuario = Usuario(nome=nome,cpf=cpf,senha=senha)
         print()
-        print("---------- FIM TELA DE CADASTRO ----------")
-Cadastro.menu()
+        print(cores.criarTextoTela("---------- FIM TELA DE CADASTRO ----------"))
+        print()
+        return cliente.criarUsuario(usuario=usuario)

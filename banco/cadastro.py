@@ -42,25 +42,30 @@ def buscarBanco(cpf:str):
     print(ExecutaSQL(vcon,vsql).fetchone())
 
 
+def atualizaBanco(user:Usuario):
+    nome=user.nome
+    senha=user.senha
+    endereco=user.endereco
+    telefone=user.telefone
+    email=user.email
+    cpf=str(user.cpf)
+    vsql="UPDATE tb_CadastroUser SET T_CPF == '"+cpf+"', T_NOME == '"+nome+"', T_ENDERECO == '"+endereco+"', T_TELEFONE == '"+telefone+"', T_EMAIL == '"+email+"', T_SENHA == '"+senha+"' WHERE N_IDCADASTRO=3"
+    ExecutaSQL(vcon,vsql)
 
 
 
-
-
-
-
-
-
-'''
-####TESTE PARA O BANCO########
+'''####TESTE PARA O BANCO########
 if __name__ == "__main__":
-    usuario = Usuario("nome", "senha", "endereco",
-                 "telefone", "email", 1205,
+    usuario = Usuario("Mariana", "123", "rua rua bairro bairro",
+                 "31 9 82400000", "maria@gamail.com", 123,
                  "moveis", [], []) 
+
     #inserirBanco(usuario)
-    buscarBanco(str(usuario.cpf))
-    print("deu bom")
-'''
+    #buscarBanco(str(usuario.cpf))
+    #atualizaBanco(usuario)
+
+    print("deu bom")'''
+
 
 
 
