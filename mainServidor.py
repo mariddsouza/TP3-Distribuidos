@@ -5,7 +5,7 @@ import socket
 from mappers.mapper_usuario import MapperUsuario
 
 from models.tipo_operacao import TipoOperacao
-from models.usuario import Endereco, Usuario
+from models.usuario import Usuario
 from servidor.servidor import Servidor
 # Endereco IP do Servidor
 # endereco:Endereco= Endereco(rua="Rua A",bairro="Vila Operária",cep="39100-000",numero=35)
@@ -28,12 +28,14 @@ while True:
             con.send(msg.encode())
 
         elif tipoOperacao==TipoOperacao.alterarUsuario.value:
-            usuario = json.loads(MapperUsuario.jsonToUsuario(dicionario=dicionario))
+            usuario = MapperUsuario.jsonToUsuario(dicionario) 
             servidor.alterarUsuario(usuario=usuario)
 
         elif tipoOperacao==TipoOperacao.criarUsuario.value:
-            usuario = json.loads(MapperUsuario.jsonToUsuario(dicionario=dicionario))
-            servidor.criarUsuario(usuario=usuario)
+            usuario = MapperUsuario.jsonToUsuario(dicionario) 
+            status=servidor.criarUsuario(usuario=usuario)
+            msg=str(status)
+            con.send(msg.encode())
 
         elif tipoOperacao == TipoOperacao.buscarTodosUsuarios.value:
             listaUsuarios = servidor.buscarTodosUsuarios()

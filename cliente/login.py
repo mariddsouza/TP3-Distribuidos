@@ -1,16 +1,22 @@
 from tkinter import *
+
+from cliente.cores import Cores
+
+
 class Login:
-    def __init__(self,master=None) -> None:
+    def __init__(self,) -> None:
         pass
     def menu()->int:
-        print("---------- TELA DE LOGIN ----------")
+        cores = Cores()
+        print(cores.criarTextoTela("---------- TELA DE LOGIN ----------"))
         print()
         print("---- Bem-vindo ao Escamo ----")
         print("Escolha uma opção:")
-        print("1 - Entrar no sistema")
-        print("2 - Cadastrar no sistema")
-        opcao=int(input("Opção:"))
+        print(cores.criarTextoOpcoes("0")+" - Fechar do sistema")
+        print(cores.criarTextoOpcoes("1")+" - Entrar no sistema")
+        print(cores.criarTextoOpcoes("2")+" - Cadastrar no sistema")
+        opcao=int(input(cores.criarTextoEntrada("Opção: ")))
         print()
-        print("---------- FIM TELA DE LOGIN ----------")
+        print(cores.criarTextoTela("---------- FIM TELA DE LOGIN ----------"))
+        print()
         return opcao
-Login.menu()

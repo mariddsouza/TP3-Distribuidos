@@ -1,13 +1,23 @@
-from cliente.cliente import Cliente
-from models.usuario import Usuario,Endereco
+from cliente.cadastro import Cadastro
+from cliente.cores import Cores
+# from cliente.cliente import Cliente
 
-cliente:Cliente = Cliente()
+from cliente.login import Login
+from models.status_resposta import StatusResposta
 
-# endereco:Endereco= Endereco(rua="Rua A",bairro="Vila Operária",cep="39100-000",numero=35)
-# usuario:Usuario=Usuario(nome="Fabio",cpf=10656980621,endereco=endereco,email="email@email.com",
-# moveis=[],senha="senha",telefone="(38)988337225",propostasFeitas=[],propostasRecebidas=[])
-# cliente.criarUsuario(usuario=usuario)
-# cliente.alterarUsuario(usuario=usuario)
-lista=cliente.buscarTodosUsuarios()
-print(lista[0].nome)
 
+# cliente:Cliente = Cliente()
+op=1
+cores=Cores()
+while op!=0:
+    op=Login.menu()
+    if op == 1:
+        pass
+    elif op == 2:
+        status = Cadastro.menu()
+        if status == StatusResposta.sucesso.value:
+            print(cores.criarTextoSucesso("Cadastro realizado com sucesso!"))
+        else:
+            print(cores.criarTextoErro("Cadastro não pôde ser realizado com sucesso!"))
+        print()
+        

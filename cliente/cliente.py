@@ -15,13 +15,17 @@ class Cliente:
         self.dest = (self.SERVER, self.PORT)
       
 
-    def criarUsuario(self,usuario:Usuario):
+    def criarUsuario(self,usuario:Usuario)-> int:
         self.tcp.connect(self.dest)
         dicionario: dict = MapperUsuario.usuarioToJson(usuario=usuario)
         dicionario['tipoOperacao']=TipoOperacao.criarUsuario.value
         msg=json.dumps(dicionario)
         self.tcp.send(msg.encode())
+        msg=self.tcp.recv(1024)
+        msg=msg.decode()
+        if not msg: return False
         self.tcp.close
+        return int(msg)
     
     def buscarUsuario(self,cpf:int,senha:str)-> Usuario:
         self.tcp.connect(self.dest)
