@@ -22,9 +22,21 @@ while opLogin!=0:
                 if opHome == 1:
                     Home.mostrarMoveis(usuario.moveis)
                 elif opHome == 2:
-                    Home.cadastrarMovel()
+                    status=Home.cadastrarMovel()
+                    if status == StatusResposta.sucesso.value:
+                        print(cores.criarTextoSucesso("Cadastro do móvel realizado com sucesso!"))
+                    else:
+                        print(cores.criarTextoErro("Cadastro do móvel não pôde ser realizado com sucesso!"))
+                    print()
+                    
                 elif opHome == 3:
-                    pass
+                    status=Home.excluirMovel()
+                    if status == StatusResposta.sucesso.value:
+                        print(cores.criarTextoSucesso("Cadastro do móvel realizado com sucesso!"))
+                    else:
+                        print(cores.criarTextoErro("Cadastro do móvel não pôde ser realizado com sucesso!"))
+                    print()
+        
                 elif opHome == 4:
                     pass
                 elif opHome == 5:

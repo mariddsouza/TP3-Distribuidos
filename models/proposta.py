@@ -1,3 +1,4 @@
+from models.movel import Movel
 from models.usuario import Usuario
 from enum import Enum
 
@@ -8,9 +9,9 @@ class StatusProposta(Enum):
     recusado=-1,
 
 class Proposta:
-    def __init__(self,usuarioRequisitante: Usuario, moveisPropostos:list,moveisRequeridos:list, status:StatusProposta) -> None:
+    def __init__(self,usuarioRequisitante: Usuario, movelProposto:Movel,movelRequerido:Movel, status:StatusProposta) -> None:
         self.usuarioRequisitante: Usuario = usuarioRequisitante
-        self.moveisPropostos:list = moveisPropostos
-        self.moveisRequeridos: list = moveisRequeridos
+        self.movelProposto:Movel= movelProposto
+        self.movelRequerido: Movel= movelRequerido  
         self.status : StatusProposta = status
 

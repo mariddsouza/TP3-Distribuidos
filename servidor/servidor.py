@@ -25,6 +25,10 @@ class Servidor:
         # inserir banco de dados
         return 1
 
+    def excluirMovel(self,cpf:int,idMovel:int )->int:
+        # inserir banco de dados
+        return 1
+
     def buscarUsuario(self,cpf:int, senha:str)->Usuario:
         # buscarBanco(cpf)
         return Usuario(nome="nome",senha="senha",cpf=123)

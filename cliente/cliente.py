@@ -81,4 +81,18 @@ class Cliente:
         self.tcp.close
         return int(msg)
 
+    def excluirMovel(self,idMovel:int,cpf:int)-> int:
+        self.tcp.connect(self.dest)
+        dicionario: dict = {}
+        dicionario['tipoOperacao']=TipoOperacao.excluirMovel.value
+        dicionario['cpf']=cpf
+        dicionario['idMovel']=id
+        msg=json.dumps(dicionario)
+        self.tcp.send(msg.encode())
+        msg=self.tcp.recv(1024)
+        msg=msg.decode()
+        if not msg: return StatusResposta.falha.value
+        self.tcp.close
+        return int(msg)
+
 

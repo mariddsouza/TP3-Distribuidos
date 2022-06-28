@@ -49,7 +49,14 @@ while True:
             movel = MapperMovel.jsonToMovel(dicionario=dicionario)
             cpf=dicionario['cpf']
             status = servidor.criarMovel(cpf=cpf,movel = movel)
-            msg=str(msg)
+            msg=str(status)
+            con.send(msg.encode())
+            
+        elif tipoOperacao == TipoOperacao.excluirMovel.value:
+            cpf = dicionario['cpf']
+            idMovel = dicionario['idMovel']
+            status = servidor.excluirMovel(cpf=cpf,idMovel=idMovel)
+            msg = str(status)
             con.send(msg.encode())
 
         elif tipoOperacao == TipoOperacao.buscarTodosUsuarios.value:
