@@ -1,7 +1,10 @@
 import sqlite3
 import sys
 import os
+
+from enum import Enum
 from sqlite3 import Error
+from models.proposta import StatusProposta
 sys.path.append(os.path.abspath('./'))
 from models.usuario import Usuario
 
@@ -27,16 +30,21 @@ def ExecutaSQL(conexao,sql):
 
 
 def inserirBanco(user:Usuario):
-    nome=user.nome
-    senha=user.senha
-    endereco=user.endereco
-    telefone=user.telefone
-    email=user.email
-    cpf=str(user.cpf)
-    vsql="INSERT INTO tb_CadastroUser(T_NOME,T_SENHA,T_ENDERECO,T_TELEFONE,T_EMAIL,T_CPF)VALUES('"+nome+"','"+senha+"','"+endereco+"','"+telefone+"','"+email+"','"+cpf+"')"
-    ExecutaSQL(vcon,vsql)
+    try:
+        nome=user.nome
+        senha=user.senha
+        endereco=user.endereco
+        telefone=user.telefone
+        email=user.email
+        cpf=str(user.cpf)
+        vsql="INSERT INTO tb_CadastroUser(T_NOME,T_SENHA,T_ENDERECO,T_TELEFONE,T_EMAIL,T_CPF)VALUES('"+nome+"','"+senha+"','"+endereco+"','"+telefone+"','"+email+"','"+cpf+"')"
+        ExecutaSQL(vcon,vsql)
 
-    
+        StatusProposta.aceito #Cadastrado com sucesso
+    except Error:
+        StatusProposta.recusado #Erro no cadastro
+
+
 def buscarBanco(cpf:str):
     vsql="SELECT * FROM tb_CadastroUser WHERE T_CPF == '"+cpf+"'; "
     print(ExecutaSQL(vcon,vsql).fetchone())
@@ -53,24 +61,35 @@ def atualizaBanco(user:Usuario):
     ExecutaSQL(vcon,vsql)
 
 
+'''def listandoBanco():
+    
+    vsql="SELECT * FROM CadastroUsuario"
+    data=ExecutaSQL(vcon,vsql)
 
-'''####TESTE PARA O BANCO########
-if __name__ == "__main__":
-    usuario = Usuario("Mariana", "123", "rua rua bairro bairro",
-                 "31 9 82400000", "maria@gamail.com", 123,
-                 "moveis", [], []) 
-
-    #inserirBanco(usuario)
-    #buscarBanco(str(usuario.cpf))
-    #atualizaBanco(usuario)
-
-    print("deu bom")'''
+    for row in data:
+        print(row)'''
 
 
 
 
 '''
-####CRIANDO A TABELA DE CADASTRO########
+#----------TESTE PARA O BANCO----------#
+if __name__ == "__main__":
+    usuario = Usuario("Mariana teste 7", "123", "rua rua bairro bairro",
+                 "31 9 82400000", "maria@gamail.com", 123,
+                 "moveis", [], []) 
+
+    inserirBanco(usuario)
+    #buscarBanco(str(usuario.cpf))
+    #atualizaBanco(usuario)
+    #listandoBanco()
+
+    print("deu bom")'''
+
+
+
+'''
+#------------CRIANDO A TABELA DE CADASTRO----------#
 
 vsql = """CREATE TABLE tb_CadastroUser(
     N_IDCADASTRO INTEGER PRIMARY KEY AUTOINCREMENT,
