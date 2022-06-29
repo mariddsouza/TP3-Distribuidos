@@ -6,7 +6,7 @@ class MapperMovel:
     def __init__(self) -> None:
         pass
 
-    def movelToJson(movel:Movel):
+    def     movelToJson(movel:Movel):
         dicionario: dict = {}
         dicionario['id']=movel.id
         dicionario['descricao']=movel.descricao

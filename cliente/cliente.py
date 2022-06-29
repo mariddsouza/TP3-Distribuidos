@@ -1,6 +1,9 @@
 import json
 import socket
+from mappers.mapper_movel import MapperMovel
 from mappers.mapper_usuario import MapperUsuario
+from models.movel import Movel
+from models.status_resposta import StatusResposta
 from  models.tipo_operacao import TipoOperacao
 
 from models.usuario import Usuario
@@ -23,7 +26,7 @@ class Cliente:
         self.tcp.send(msg.encode())
         msg=self.tcp.recv(1024)
         msg=msg.decode()
-        if not msg: return False
+        if not msg: return StatusResposta.falha.value
         self.tcp.close
         return int(msg)
     
@@ -32,11 +35,11 @@ class Cliente:
         dicionario:dict={}
         dicionario['cpf']=cpf
         dicionario['senha']=senha
-        dicionario['tipoOperaçao']=TipoOperacao.buscarUsuario.value
+        dicionario['tipoOperacao']=TipoOperacao.buscarUsuario.value
         msg=json.dumps(dicionario)
         self.tcp.send(msg.encode())
         msg=self.tcp.recv(1024)
-        if not msg: return None
+        if  msg.decode() == " ": return None
         msg=json.loads(msg)
         self.tcp.close
         return MapperUsuario.jsonToUsuario(dict(msg))
@@ -64,5 +67,32 @@ class Cliente:
             listaUsuarios.append(MapperUsuario.jsonToUsuario(json.loads(v)))
         self.tcp.close
         return listaUsuarios
+    
+    def cadastrarMovel(self,cpf:int, movel:Movel)-> int:
+        self.tcp.connect(self.dest)
+        dicionario: dict = MapperMovel.movelToJson(movel=movel)
+        dicionario['tipoOperacao']=TipoOperacao.criarMovel.value
+        dicionario['cpf']=cpf
+        msg=json.dumps(dicionario)
+        self.tcp.send(msg.encode())
+        msg=self.tcp.recv(1024)
+        msg=msg.decode()
+        if not msg: return StatusResposta.falha.value
+        self.tcp.close
+        return int(msg)
+
+    def excluirMovel(self,idMovel:int,cpf:int)-> int:
+        self.tcp.connect(self.dest)
+        dicionario: dict = {}
+        dicionario['tipoOperacao']=TipoOperacao.excluirMovel.value
+        dicionario['cpf']=cpf
+        dicionario['idMovel']=id
+        msg=json.dumps(dicionario)
+        self.tcp.send(msg.encode())
+        msg=self.tcp.recv(1024)
+        msg=msg.decode()
+        if not msg: return StatusResposta.falha.value
+        self.tcp.close
+        return int(msg)
 
 
