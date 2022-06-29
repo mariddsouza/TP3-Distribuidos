@@ -38,7 +38,6 @@ class Servidor:
         return buscarUsuarioBanco(cpf=cpf,senha=senha)
     
     def buscarMoveis(self,cpf:str):
-        print(cpf)
         return buscarMoveis(cpf=cpf)
 
     def alterarUsuario(self,usuario:Usuario):

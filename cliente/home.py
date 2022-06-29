@@ -44,12 +44,13 @@ class Home:
         descricao = input(cores.criarTextoOpcoes("Descrição: "))
         tempoUso = int(input(cores.criarTextoOpcoes("Tempo de uso: ")))
         movel = Movel(nome=nome,tempoUso=tempoUso,descricao=descricao)
+        status=cliente.cadastrarMovel(cpf,movel=movel)
         print()
         print(cores.criarTextoTela("---------- FIM TELA DE CADASTRO DE MÓVEL----------"))
         print()
-        return cliente.cadastrarMovel(cpf,movel=movel)
+        return status 
 
-    def excluirMovel(cpf:int):
+    def excluirMovel():
         cores = Cores()
         cliente : Cliente = Cliente()
         print(cores.criarTextoTela("---------- TELA DE EXCLUSÃO DE MÓVEL ----------"))
@@ -59,7 +60,7 @@ class Home:
         print()
         print(cores.criarTextoTela("---------- FIM TELA DE EXCLUSÃO DE MÓVEL----------"))
         print()
-        return cliente.excluirMovel(cpf,idMovel=id)
+        return cliente.excluirMovel(idMovel=id)
     
     def mostrarPropostasRealizadas(cpf:int):
         # cores=Cores()

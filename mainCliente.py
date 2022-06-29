@@ -25,7 +25,7 @@ while opLogin!=0:
                 if opHome == 1:
                     Home.mostrarMoveis(usuario.moveis)
                 elif opHome == 2:
-                    status=Home.cadastrarMovel()
+                    status=Home.cadastrarMovel(cpf=usuario.cpf)
                     if status == StatusResposta.sucesso.value:
                         print(cores.criarTextoSucesso("Cadastro do móvel realizado com sucesso!"))
                     else:
@@ -35,9 +35,10 @@ while opLogin!=0:
                 elif opHome == 3:
                     status=Home.excluirMovel()
                     if status == StatusResposta.sucesso.value:
-                        print(cores.criarTextoSucesso("Cadastro do móvel realizado com sucesso!"))
+                        print(cores.criarTextoSucesso("Móvel excluído com sucesso!"))
+                        usuario.moveis = cliente.buscarMoveis(usuario.cpf)
                     else:
-                        print(cores.criarTextoErro("Cadastro do móvel não pôde ser realizado com sucesso!"))
+                        print(cores.criarTextoErro("Móvel não pôde ser excluído com sucesso!"))
                     print()
         
                 elif opHome == 4:

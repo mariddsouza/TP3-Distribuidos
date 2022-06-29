@@ -61,24 +61,29 @@ def inserirUsuario(user:Usuario)->int:
         return StatusResposta.falha.value #Erro no cadastro
        
 def inserirMovel(cpf:str, movel:Movel):
-    nome=movel.nome
-    tempoUso=movel.tempoUso
-    descricao=movel.descricao
-    vsql="INSERT INTO Movel(nome,tempoUso,descricao,Usuario_cpf) VALUES('"+nome+"','"+str(tempoUso)+"','"+descricao+"','"+cpf+"');"
-    ExecutaSQL(vcon,vsql)
-
-    #Fazer tratamento de erro 
-
-
-    #retorna o id do movel
-    vsql="select last_insert_rowid()"
-    return ExecutaSQL(vcon,vsql).fetchone()[0] 
+    try:
+        nome=movel.nome
+        tempoUso=movel.tempoUso
+        descricao=movel.descricao
+        vsql="INSERT INTO Movel(nome,tempoUso,descricao,Usuario_cpf) VALUES('"+nome+"','"+str(tempoUso)+"','"+descricao+"','"+str(cpf)+"');"
+        ExecutaSQL(vcon,vsql)
+        #Fazer tratamento de erro 
+        #retorna o id do movel
+        # vsql="select last_insert_rowid()"
+        # ExecutaSQL(vcon,vsql).fetchone()[0]
+        return  StatusResposta.sucesso.value
+    except Error:
+        return StatusResposta.falha.value
 
 
 
 def deletarMovel(idMovel:int):
-    vsql="DELETE FROM Movel WHERE idMovel == '"+str(idMovel)+"';"
-    ExecutaSQL(vcon,vsql)
+    try:
+        vsql="DELETE FROM Movel WHERE idMovel == '"+str(idMovel)+"';"
+        ExecutaSQL(vcon,vsql)
+        return StatusResposta.sucesso.value
+    except:
+        return StatusResposta.falha.value
 
 def buscarUsuarioBanco(cpf:str,senha:str)->Usuario:
     vsql="SELECT * FROM Usuario WHERE cpf =='"+cpf+"' AND senha == '"+senha+"';"
@@ -105,10 +110,8 @@ def listarUsuarios():
 def buscarMoveis(cpf)-> List[Movel]:
     moveis = []
     vsql="SELECT * FROM Movel WHERE Usuario_cpf == "+str(cpf)+";"
-    print()
     result = ExecutaSQL(vcon,vsql).fetchall()
     for movel in result:
-        print(movel)
         moveis.append( Movel(id=movel[0],nome=movel[1],descricao=movel[3],tempoUso=movel[2]))
     return moveis
 

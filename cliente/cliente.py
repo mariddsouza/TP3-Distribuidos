@@ -28,7 +28,7 @@ class Cliente:
         msg=self.tcp.recv(4096)
         msg=msg.decode()
         if not msg: return StatusResposta.falha.value
-        self.tcp.close
+        self.tcp.close()
         return int(msg)
     
     def buscarUsuario(self,cpf:int,senha:str)-> Usuario:
@@ -42,7 +42,7 @@ class Cliente:
         msg=self.tcp.recv(4096)
         if msg.decode() == " ": return None
         msg=json.loads(msg)
-        self.tcp.close
+        self.tcp.close()
         return MapperUsuario.jsonToUsuario(dict(msg))
 
     def buscarMoveis(self,cpf:int)->List[Movel]:
@@ -53,14 +53,14 @@ class Cliente:
         msg = json.dumps(dicionario)
         self.tcp.send(msg.encode())
         msg = self.tcp.recv(4096)
-        if not msg: return []
+        self.tcp.close()
+        print("CLosed")
+        if not msg:
+            return []
         dicionario = json.loads(msg)
-        print("asdasdasd")
-        print(dicionario)
         listaMoveis= []
         for k,v in dicionario.items():
             listaMoveis.append(MapperMovel.jsonToMovel(json.loads(v)))
-        self.tcp.close
         return listaMoveis
     
 
@@ -70,7 +70,7 @@ class Cliente:
         dicionario['tipoOperacao']=TipoOperacao.alterarUsuario.value
         msg=json.dumps(dicionario)
         self.tcp.send(msg.encode())
-        self.tcp.close
+        self.tcp.close()
     
     def buscarTodosUsuarios(self)-> list:
         self.tcp.connect(self.dest)
@@ -85,7 +85,7 @@ class Cliente:
         listaUsuarios= []
         for k,v in dicionario.items():
             listaUsuarios.append(MapperUsuario.jsonToUsuario(json.loads(v)))
-        self.tcp.close
+        self.tcp.close()
         return listaUsuarios
     
     def cadastrarMovel(self,cpf:int, movel:Movel)-> int:
@@ -95,24 +95,25 @@ class Cliente:
         dicionario['cpf']=cpf
         msg=json.dumps(dicionario)
         self.tcp.send(msg.encode())
-        msg=self.tcp.recv(1024)
+        print("Passei")
+        msg=self.tcp.recv(4096)
+        print("Passei dnv")
         msg=msg.decode()
         if not msg: return StatusResposta.falha.value
-        self.tcp.close
+        self.tcp.close()
         return int(msg)
 
-    def excluirMovel(self,idMovel:int,cpf:int)-> int:
+    def excluirMovel(self,idMovel:int)-> int:
         self.tcp.connect(self.dest)
         dicionario: dict = {}
         dicionario['tipoOperacao']=TipoOperacao.excluirMovel.value
-        dicionario['cpf']=cpf
-        dicionario['idMovel']=id
+        dicionario['idMovel']=idMovel
         msg=json.dumps(dicionario)
         self.tcp.send(msg.encode())
-        msg=self.tcp.recv(1024)
+        msg=self.tcp.recv(4096 )
         msg=msg.decode()
         if not msg: return StatusResposta.falha.value
-        self.tcp.close
+        self.tcp.close()
         return int(msg)
 
 

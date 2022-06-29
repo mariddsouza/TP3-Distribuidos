@@ -44,16 +44,20 @@ while True:
             con.send(msg.encode())
 
         elif tipoOperacao == TipoOperacao.criarMovel.value:
+            print("TipoOperacao")
             movel = MapperMovel.jsonToMovel(dicionario=dicionario)
             cpf=dicionario['cpf']
             status = servidor.criarMovel(cpf=cpf,movel = movel)
+            print(
+            "STatus"
+            )
             msg=str(status)
+            print(msg)
             con.send(msg.encode())
             
         elif tipoOperacao == TipoOperacao.excluirMovel.value:
-            cpf = str(dicionario['cpf'])
             idMovel = dicionario['idMovel']
-            status = servidor.excluirMovel(cpf=cpf,idMovel=idMovel)
+            status = servidor.excluirMovel(idMovel=idMovel)
             msg = str(status)
             con.send(msg.encode())
 
@@ -69,7 +73,6 @@ while True:
 
         elif tipoOperacao==TipoOperacao.buscarMoveis.value:
             listaMoveis = servidor.buscarMoveis(dicionario['cpf'])
-            print(listaMoveis)
             dicionario={}
             cont=0
             while(cont!=len(listaMoveis)):
@@ -77,16 +80,16 @@ while True:
                 cont+=1
             msg =json.dumps(dicionario)
             con.send(msg.encode())
-            pass
+            
+            
 
         elif tipoOperacao == TipoOperacao.aceitarTroca:
             pass
 
         elif tipoOperacao == TipoOperacao.recusarTroca:
             pass
-        
-        
-    print ('Finalizando conexão do cliente', cliente)
     con.close()
+    print ('Finalizando conexão do cliente', cliente)
+    
 
 
