@@ -1,18 +1,18 @@
-from shutil import move
 import sqlite3
 import sys
 import os
 
-from sqlite3 import Error, sqlite_version
+from sqlite3 import Error
+from typing import List
+from models.status_resposta import StatusResposta
 sys.path.append(os.path.abspath('./'))
 from models.usuario import Usuario
 from models.movel import Movel
-from models.proposta import Proposta, StatusProposta
+from models.proposta import Proposta
 
 #criando o banco 
 def criarBanco():
     cursor = sqlite3.connect("UserCadastro.bd").cursor()
-
     sql_file = open("banco/criarBanco.sql")
     sql_as_string = sql_file.read()
     cursor.executescript(sql_as_string)
@@ -40,27 +40,26 @@ def ExecutaSQL(conexao,sql):
         print(ex)
 
 
-def inserirUsuario(user:Usuario):
+def inserirUsuario(user:Usuario)->int:
     try:
         nome=user.nome
         senha=user.senha
         cpf=str(user.cpf)
-        vsql="INSERT INTO Usuario(nome,senha,cpf)VALUES('"+nome+"','"+senha+"','"+cpf+"')"
-        ExecutaSQL(vcon,vsql)
-
-        StatusProposta.aceito.value #Cadastrado com sucesso
-        print("Cadastro inserido com sucesso ")
-
-        #Fazer tratamento de erro 
-
-        #retorna o cpf do usuario
-        vsql="SELECT * FROM Usuario ORDER BY rowid DESC LIMIT 1;"
-        return ExecutaSQL(vcon,vsql).fetchone()
-
-    except Error:
-        StatusProposta.recusado.value #Erro no cadastro
-        print("entrou no errado")
-
+        # print("Cadastro inserido com sucesso ")
+        vsql="SELECT * FROM Usuario WHERE cpf == {}".format(cpf)
+        result = ExecutaSQL(vcon,vsql).fetchone()
+        if(result==None):
+            vsql="INSERT INTO Usuario(nome,senha,cpf)VALUES('"+nome+"','"+senha+"','"+cpf+"')"
+            ExecutaSQL(vcon,vsql)
+            # vsql="SELECT * FROM Usuario ORDER BY rowid DESC LIMIT 1;"
+            # ExecutaSQL(vcon,vsql).fetchone()
+            return StatusResposta.sucesso.value
+        else:
+            return StatusResposta.falha.value 
+    except :
+        # print("entrou no errado")
+        return StatusResposta.falha.value #Erro no cadastro
+       
 def inserirMovel(cpf:str, movel:Movel):
     nome=movel.nome
     tempoUso=movel.tempoUso
@@ -81,9 +80,14 @@ def deletarMovel(idMovel:int):
     vsql="DELETE FROM Movel WHERE idMovel == '"+str(idMovel)+"';"
     ExecutaSQL(vcon,vsql)
 
-def buscarUsuarioBanco(cpf:str)->Usuario:
-    vsql="SELECT * FROM Usuario WHERE cpf == '"+cpf+"'; "
-    return ExecutaSQL(vcon,vsql).fetchone()
+def buscarUsuarioBanco(cpf:str,senha:str)->Usuario:
+    vsql="SELECT * FROM Usuario WHERE cpf =='"+cpf+"' AND senha == '"+senha+"';"
+    result=ExecutaSQL(vcon,vsql).fetchone()
+    print(result)
+    if result == None:
+        return None
+    else:
+        return Usuario(nome=result[1],senha=result[2],cpf=int(result[0]))
 
 
 def atualizaBanco(user:Usuario):
@@ -97,6 +101,16 @@ def atualizaBanco(user:Usuario):
 def listarUsuarios():
     vsql="SELECT * FROM Usuario ; "
     return ExecutaSQL(vcon,vsql).fetchall()
+ 
+def buscarMoveis(cpf)-> List[Movel]:
+    moveis = []
+    vsql="SELECT * FROM Movel WHERE Usuario_cpf == "+str(cpf)+";"
+    print()
+    result = ExecutaSQL(vcon,vsql).fetchall()
+    for movel in result:
+        print(movel)
+        moveis.append( Movel(id=movel[0],nome=movel[1],descricao=movel[3],tempoUso=movel[2]))
+    return moveis
 
 
 def criarProposta(idMovelRequirido: int, idMovelProposto: int, cpfUsuarioRequisitante:str, cpfUsuarioAlvo:str):

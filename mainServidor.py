@@ -17,9 +17,9 @@ servidor: Servidor = Servidor()
 
 while True:
     con, cliente = servidor.tcp.accept()
-    print ('Concetado por ', cliente)
+    print ('Conectado por ', cliente)
     while True:
-        msg = con.recv(1024)
+        msg = con.recv(4096)
         if not msg: break
         dicionario= json.loads(msg)
         tipoOperacao=dicionario['tipoOperacao']
@@ -29,11 +29,9 @@ while True:
             if usuario is not None:
                 # print("Entrei")
                 msg =json.dumps(MapperUsuario.usuarioToJson(usuario=usuario))
-        
                 con.send(msg.encode())
-                
             else:
-                con.send(' '.encode())
+                con.send(" ".encode())
 
         elif tipoOperacao==TipoOperacao.alterarUsuario.value:
             usuario = MapperUsuario.jsonToUsuario(dicionario) 
@@ -53,7 +51,7 @@ while True:
             con.send(msg.encode())
             
         elif tipoOperacao == TipoOperacao.excluirMovel.value:
-            cpf = dicionario['cpf']
+            cpf = str(dicionario['cpf'])
             idMovel = dicionario['idMovel']
             status = servidor.excluirMovel(cpf=cpf,idMovel=idMovel)
             msg = str(status)
@@ -69,7 +67,16 @@ while True:
             msg =json.dumps(dicionario)
             con.send(msg.encode())
 
-        elif tipoOperacao==TipoOperacao.proporTroca:
+        elif tipoOperacao==TipoOperacao.buscarMoveis.value:
+            listaMoveis = servidor.buscarMoveis(dicionario['cpf'])
+            print(listaMoveis)
+            dicionario={}
+            cont=0
+            while(cont!=len(listaMoveis)):
+                dicionario[str(cont)]=json.dumps(MapperMovel.movelToJson(movel=listaMoveis[cont]))
+                cont+=1
+            msg =json.dumps(dicionario)
+            con.send(msg.encode())
             pass
 
         elif tipoOperacao == TipoOperacao.aceitarTroca:
@@ -78,7 +85,8 @@ while True:
         elif tipoOperacao == TipoOperacao.recusarTroca:
             pass
         
-    print ('Finalizando conexao do cliente', cliente)
+        
+    print ('Finalizando conexão do cliente', cliente)
     con.close()
 
 

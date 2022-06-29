@@ -1,4 +1,3 @@
-import re
 from models.movel import Movel
 
 

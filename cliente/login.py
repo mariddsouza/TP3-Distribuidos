@@ -27,9 +27,9 @@ class Login:
     def login()->Usuario:
         cores = Cores()
         cliente = Cliente()
-        cpf=input(cores.criarTextoOpcoes("Insira seu CPF: "))
+        cpf=(input(cores.criarTextoOpcoes("Insira seu CPF: ")))
         senha=input(cores.criarTextoOpcoes("Insira sua senha: "))
-        usuario=cliente.buscarUsuario(cpf=cpf,senha=senha)
+        usuario = cliente.buscarUsuario(cpf=cpf,senha=senha)
         print(cores.criarTextoTela("---------- FIM TELA DE LOGIN ----------"))
         return usuario
         

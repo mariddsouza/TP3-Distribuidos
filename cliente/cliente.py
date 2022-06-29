@@ -1,5 +1,6 @@
 import json
 import socket
+from typing import List
 from mappers.mapper_movel import MapperMovel
 from mappers.mapper_usuario import MapperUsuario
 from models.movel import Movel
@@ -24,7 +25,7 @@ class Cliente:
         dicionario['tipoOperacao']=TipoOperacao.criarUsuario.value
         msg=json.dumps(dicionario)
         self.tcp.send(msg.encode())
-        msg=self.tcp.recv(1024)
+        msg=self.tcp.recv(4096)
         msg=msg.decode()
         if not msg: return StatusResposta.falha.value
         self.tcp.close
@@ -38,11 +39,30 @@ class Cliente:
         dicionario['tipoOperacao']=TipoOperacao.buscarUsuario.value
         msg=json.dumps(dicionario)
         self.tcp.send(msg.encode())
-        msg=self.tcp.recv(1024)
-        if  msg.decode() == " ": return None
+        msg=self.tcp.recv(4096)
+        if msg.decode() == " ": return None
         msg=json.loads(msg)
         self.tcp.close
         return MapperUsuario.jsonToUsuario(dict(msg))
+
+    def buscarMoveis(self,cpf:int)->List[Movel]:
+        self.tcp.connect(self.dest)
+        dicionario = {}
+        dicionario['cpf']=cpf
+        dicionario['tipoOperacao']=TipoOperacao.buscarMoveis.value
+        msg = json.dumps(dicionario)
+        self.tcp.send(msg.encode())
+        msg = self.tcp.recv(4096)
+        if not msg: return []
+        dicionario = json.loads(msg)
+        print("asdasdasd")
+        print(dicionario)
+        listaMoveis= []
+        for k,v in dicionario.items():
+            listaMoveis.append(MapperMovel.jsonToMovel(json.loads(v)))
+        self.tcp.close
+        return listaMoveis
+    
 
     def alterarUsuario(self,usuario:Usuario)-> None:
         self.tcp.connect(self.dest)
@@ -58,7 +78,7 @@ class Cliente:
         dicionario['tipoOperacao']=TipoOperacao.buscarTodosUsuarios.value
         msg = json.dumps(dicionario)
         self.tcp.send(msg.encode())
-        msg = self.tcp.recv(1024)
+        msg = self.tcp.recv(4096)
         if not msg: return None
         dicionario = json.loads(msg)
         print(dicionario)

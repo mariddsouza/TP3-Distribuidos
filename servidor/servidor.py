@@ -5,7 +5,7 @@ from models.movel import Movel
 from models.proposta import Proposta
 
 from models.usuario import Usuario
-from banco.cadastro import aceitaProposta, deletarMovel, inserirUsuario, inserirMovel
+from banco.cadastro import aceitaProposta, buscarMoveis, deletarMovel, inserirUsuario, inserirMovel
 from banco.cadastro import buscarUsuarioBanco
 from banco.cadastro import atualizaBanco
 from banco.cadastro import listarUsuarios
@@ -26,7 +26,7 @@ class Servidor:
         self.tcp.listen(1)
     
     def criarUsuario(self,usuario:Usuario )->int:
-        return int(inserirUsuario(usuario)[0])
+        return inserirUsuario(usuario)
     
     def criarMovel(self,cpf:int,movel:Movel )->int:
         return inserirMovel(cpf, movel)
@@ -35,11 +35,11 @@ class Servidor:
        return deletarMovel(idMovel)
 
     def buscarUsuario(self,cpf:int, senha:str)->Usuario:
-        user = buscarUsuarioBanco(cpf)
-        if user:
-            return Usuario(nome=user[1],senha=user[2],cpf=int(user[0]))
-        else:
-            print("Usuario nao encontrado")
+        return buscarUsuarioBanco(cpf=cpf,senha=senha)
+    
+    def buscarMoveis(self,cpf:str):
+        print(cpf)
+        return buscarMoveis(cpf=cpf)
 
     def alterarUsuario(self,usuario:Usuario):
         atualizaBanco(usuario)

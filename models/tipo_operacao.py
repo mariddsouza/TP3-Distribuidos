@@ -13,3 +13,4 @@ class TipoOperacao(Enum):
     
     criarMovel = 7
     excluirMovel = 8
+    buscarMoveis = 9

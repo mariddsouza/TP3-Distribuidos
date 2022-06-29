@@ -25,13 +25,13 @@ class Home:
 
     def mostrarMoveis(moveis:List[Movel]):
         cores=Cores()
-        print("Você possui os seguintes móveis:")
+        print("Você possui {} móveis:".format(len(moveis)))
         for movel in moveis:
             print(cores.criarTextoEntrada("----------------------------------------"))
-            print(cores.criarTextoOpcoes("ID do móvel:")+movel.id)
-            print(cores.criarTextoOpcoes("Nome do móvel:")+movel.nome)
-            print(cores.criarTextoOpcoes("Sobre:")+movel.descricao)
-            print(cores.criarTextoOpcoes("Tempo de uso:")+movel.tempoUso)
+            print(cores.criarTextoOpcoes("ID do móvel: ")+str(movel.id))
+            print(cores.criarTextoOpcoes("Nome do móvel: ")+movel.nome)
+            print(cores.criarTextoOpcoes("Sobre: ")+movel.descricao)
+            print(cores.criarTextoOpcoes("Tempo de uso: ")+str(movel.tempoUso))
             print(cores.criarTextoEntrada("----------------------------------------"))
     
     def cadastrarMovel(cpf:int):
