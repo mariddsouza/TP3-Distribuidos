@@ -4,16 +4,16 @@ from enum import Enum
 
 
 class StatusProposta(Enum):
-    emEspera=0,
-    aceito=1,
-    recusado=-1,
+    EmEspera=0
+    Aceito=1
+    Recusado=-1
 
 class Proposta:
-    def __init__(self,usuarioRequisitante: Usuario, usuarioAlvo: Usuario, moveisPropostos:Movel,moveisRequeridos:Movel, status:StatusProposta) -> None:
-        self.idProposta = 0
+    def __init__(self,idProposta:int,usuarioRequisitante: Usuario, usuarioAlvo: Usuario, movelProposto:Movel,movelRequerido:Movel, status:int) -> None:
+        self.idProposta:int = idProposta
         self.usuarioRequisitante: Usuario = usuarioRequisitante
         self.usuarioAlvo: Usuario = usuarioAlvo
-        self.moveisPropostos:Movel = moveisPropostos
-        self.moveisRequeridos: Movel = moveisRequeridos
-        self.status : StatusProposta = status
+        self.movelProposto:Movel = movelProposto
+        self.movelRequerido: Movel = movelRequerido
+        self.status : int = status
 

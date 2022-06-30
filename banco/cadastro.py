@@ -1,9 +1,11 @@
+from logging import Logger
 import sqlite3
 import sys
 import os
 
 from sqlite3 import Error
 from typing import List
+from unittest import result
 from models.status_resposta import StatusResposta
 sys.path.append(os.path.abspath('./'))
 from models.usuario import Usuario
@@ -77,9 +79,9 @@ def inserirMovel(cpf:str, movel:Movel):
 
 
 
-def deletarMovel(idMovel:int):
+def deletarMovel(idMovel:int,cpf:int):
     try:
-        vsql="DELETE FROM Movel WHERE idMovel == '"+str(idMovel)+"';"
+        vsql="DELETE FROM Movel WHERE idMovel == '"+str(idMovel)+"' AND Usuario_cpf == '"+str(cpf)+"';"
         ExecutaSQL(vcon,vsql)
         return StatusResposta.sucesso.value
     except:
@@ -88,7 +90,16 @@ def deletarMovel(idMovel:int):
 def buscarUsuarioBanco(cpf:str,senha:str)->Usuario:
     vsql="SELECT * FROM Usuario WHERE cpf =='"+cpf+"' AND senha == '"+senha+"';"
     result=ExecutaSQL(vcon,vsql).fetchone()
-    print(result)
+    # print(result)
+    if result == None:
+        return None
+    else:
+        return Usuario(nome=result[1],senha=result[2],cpf=int(result[0]))
+
+def buscarUsuarioBancoCpf(cpf:str)->Usuario:
+    vsql="SELECT * FROM Usuario WHERE cpf =='"+cpf+"';"
+    result=ExecutaSQL(vcon,vsql).fetchone()
+    
     if result == None:
         return None
     else:
@@ -103,9 +114,20 @@ def atualizaBanco(user:Usuario):
     ExecutaSQL(vcon,vsql)
 
 
-def listarUsuarios():
-    vsql="SELECT * FROM Usuario ; "
-    return ExecutaSQL(vcon,vsql).fetchall()
+def listarUsuarios()-> List[Usuario]:
+    vsql="SELECT * FROM Usuario ;"
+    usuarios = []
+    result = ExecutaSQL(vcon,vsql).fetchall()
+    print(result)
+    for usuario in result:
+        cpf=int(usuario[0])
+        # print(cpf)
+        # moveis = buscarMoveis(cpf=cpf)
+        # print(moveis)
+        # propostasRecebidas = buscaPropostaRecebida(cpf=cpf)
+        # propostasRealizadas = buscaPropostaRealizada(cpf=cpf)
+        usuarios.append( Usuario(nome=usuario[1],senha=usuario[2],cpf=cpf,))
+    return usuarios
  
 def buscarMoveis(cpf)-> List[Movel]:
     moveis = []
@@ -117,31 +139,109 @@ def buscarMoveis(cpf)-> List[Movel]:
 
 
 def criarProposta(idMovelRequirido: int, idMovelProposto: int, cpfUsuarioRequisitante:str, cpfUsuarioAlvo:str):
-    vsql="INSERT INTO Proposta(usuarioRequisitante, usuarioAlvo, moveisPropostos, moveisRequiridos, status)VALUES('"+str(cpfUsuarioRequisitante)+"','"+str(cpfUsuarioAlvo)+"','"+str(idMovelProposto)+"','"+str(idMovelRequirido)+"',0)"
-    ExecutaSQL(vcon,vsql)
-
+    try:
+        vsql="INSERT INTO Proposta(usuarioRequisitante, usuarioAlvo, moveisPropostos, moveisRequiridos, status)VALUES('"+str(cpfUsuarioRequisitante)+"','"+str(cpfUsuarioAlvo)+"','"+str(idMovelProposto)+"','"+str(idMovelRequirido)+"',0)"
+        ExecutaSQL(vcon,vsql)
+        return StatusResposta.sucesso.value
+    except Error:
+        return StatusResposta.falha.value
 def buscaMovel(idMovel:int):
     vsql="SELECT * FROM Movel WHERE idMovel == '"+str(idMovel)+"'; "
     querry= ExecutaSQL(vcon,vsql).fetchone()
     return Movel(querry[1],querry[2],querry[3],querry[0])
 
-def buscaPropostaRealizada(cpf:int):
-    vsql="SELECT * FROM Proposta WHERE usuarioRequisitante == '"+str(cpf)+"'; "
-    return ExecutaSQL(vcon,vsql).fetchall()
+def buscaPropostaRealizada(cpf:int)->List[Proposta]:
+    propostas=[]
+    vsql="SELECT * FROM Proposta WHERE usuarioRequisitante == '"+str(cpf)+"';"
+    # print("vsql: ",vsql)
+    result= ExecutaSQL(vcon,vsql).fetchall()
+    print(result)
+    # print("Result",result)
+    for proposta in result:
+        usuarioRequisitante = buscarUsuarioBancoCpf(proposta[0])
+        usuarioRequisitado = buscarUsuarioBancoCpf(proposta[1])
+        movelProposto = buscaMovel(proposta[2])
+        movelRequisitado = buscaMovel(proposta[3])
+        status=proposta[4]
+        idProposta=proposta[5]
+        propostas.append( Proposta(usuarioAlvo=usuarioRequisitado,usuarioRequisitante=usuarioRequisitante,
+        idProposta=idProposta,movelProposto=movelProposto,movelRequerido=movelRequisitado,status=status))
+    # print(propostas)
+    return propostas
 
 def buscaPropostaRecebida(cpf:int):
+    propostas=[]
     vsql="SELECT * FROM Proposta WHERE usuarioAlvo == '"+str(cpf)+"'; "
-    return ExecutaSQL(vcon,vsql).fetchall()
+    # print("vsql: ",vsql)
+    result= ExecutaSQL(vcon,vsql).fetchall()
+    # print("Result",result)
+    for proposta in result:
+        usuarioRequisitante = buscarUsuarioBancoCpf(proposta[0])
+        usuarioRequisitado = buscarUsuarioBancoCpf(proposta[1])
+        movelProposto = buscaMovel(proposta[2])
+        movelRequisitado = buscaMovel(proposta[3])
+        status=proposta[4]
+        idProposta=proposta[5]
 
-def aceitaProposta(idMovelRequirido: int, idMovelProposto: int, cpfUsuarioRequisitante:str, cpfUsuarioAlvo:str):
-    vsql="UPDATE Proposta SET status=1 WHERE (usuarioRequisitante = '"+str(cpfUsuarioRequisitante)+"'AND usuarioAlvo = '"+str(cpfUsuarioAlvo)+"'AND moveisPropostos = '"+str(idMovelProposto)+"'AND moveisRequiridos = '"+str(idMovelRequirido)+"');"
-    ExecutaSQL(vcon,vsql)
+        propostas.append( Proposta(usuarioAlvo=usuarioRequisitado,usuarioRequisitante=usuarioRequisitante,
+        idProposta=idProposta,movelProposto=movelProposto,movelRequerido=movelRequisitado,status=status))
+    # print(propostas)
+    return propostas
 
-def recusaProposta(idMovelRequirido: int, idMovelProposto: int, cpfUsuarioRequisitante:str, cpfUsuarioAlvo:str):
-    vsql="UPDATE Proposta SET status=-1 WHERE (usuarioRequisitante = '"+str(cpfUsuarioRequisitante)+"'AND usuarioAlvo = '"+str(cpfUsuarioAlvo)+"'AND moveisPropostos = '"+str(idMovelProposto)+"'AND moveisRequiridos = '"+str(idMovelRequirido)+"');"
-    ExecutaSQL(vcon,vsql)
+def aceitaProposta(idProposta:int,cpfUsuarioAlvo:int)->int:
+    try:
+        print(idProposta,cpfUsuarioAlvo)
+
+        proposta = buscaProposta(idProposta=idProposta)
+        # print(str(proposta.usuarioRequisitante.cpf),proposta.movelRequerido.id)
+        # print(str(proposta.usuarioAlvo.cpf),proposta.movelProposto.id)
+        # print(proposta.movelProposto.id,proposta.usuarioRequisitante.cpf)
+        # print(proposta.movelRequerido.id,proposta.usuarioAlvo.cpf)
+        # inserirMovel(str(proposta.usuarioRequisitante.cpf),proposta.movelRequerido)
+        # inserirMovel(str(proposta.usuarioAlvo.cpf),proposta.movelProposto)
+        updateMovelCpf(proposta.movelRequerido.id,proposta.usuarioRequisitante.cpf)
+        updateMovelCpf(proposta.movelProposto.id,proposta.usuarioAlvo.cpf)
+        deletarMovel(idMovel=proposta.movelProposto.id,cpf=proposta.usuarioRequisitante.cpf)
+        deletarMovel(idMovel=proposta.movelRequerido.id,cpf=proposta.usuarioAlvo.cpf)
+        vsql="UPDATE Proposta SET status=1 WHERE (idProposta = '"+str(idProposta)+"'AND usuarioAlvo = '"+str(cpfUsuarioAlvo)+"');"
+        ExecutaSQL(vcon,vsql)
+        return StatusResposta.sucesso.value
+    except:
+        return StatusResposta.falha.value
+
+def recusaProposta(idProposta:int,cpfUsuarioAlvo:int):
+    try:
+        vsql="UPDATE Proposta SET status=-1 WHERE (idProposta = '"+str(idProposta)+"'AND usuarioAlvo = '"+str(cpfUsuarioAlvo)+"');"
+        ExecutaSQL(vcon,vsql)
+        return StatusResposta.sucesso.value
+    except:
+        return StatusResposta.falha.value
+
+def buscaProposta(idProposta:int)->Proposta:
+    try:
+        vsql="SELECT * FROM Proposta WHERE idProposta == '"+str(idProposta)+"'; "
+        result = ExecutaSQL(vcon,vsql).fetchone()
+        usuarioAlvo=buscarUsuarioBancoCpf(result[1])
+        usuarioRequisitante=buscarUsuarioBancoCpf(result[0])
+        movelProposto = buscaMovel(result[2])
+        movelRequerido = buscaMovel(result[3])
+        idProposta=result[5]
+        status = result[4]
+        proposta= Proposta(idProposta,usuarioRequisitante,usuarioAlvo,movelProposto,movelRequerido,status)
+        return proposta
+    except Exception as e:
+        print('Exception occurred while code execution: ' + str(e))
+
+def updateMovelCpf(idMovel:int,cpf:int):
+    try:
+        vsql="UPDATE Movel SET usuario_cpf == '"+str(cpf)+"' WHERE idMovel= '"+str(idMovel)+"';"
+        ExecutaSQL(vcon,vsql)
+        
+    except Exception as e:
+        print(str(e))
 
 
+    
 #----------TESTE PARA O BANCO----------#
 if __name__ == "__main__":
     usuario1 = Usuario("Mariana", "senha", 380033,

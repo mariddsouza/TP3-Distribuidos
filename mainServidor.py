@@ -1,19 +1,15 @@
 #Servidor TCP
 import json
 from mailbox import NotEmptyError
-import socket
 from mappers.mapper_movel import MapperMovel
+from mappers.mapper_proposta import MapperProposta
 from mappers.mapper_usuario import MapperUsuario
 
 from models.tipo_operacao import TipoOperacao
 from models.usuario import Usuario
 from servidor.servidor import Servidor
-# Endereco IP do Servidor
-# endereco:Endereco= Endereco(rua="Rua A",bairro="Vila Operária",cep="39100-000",numero=35)
-# usuario:Usuario=Usuario(nome="Fabio",cpf=10656980621,endereco=endereco,email="email@email.com",
-# moveis=[],senha="senha",telefone="(38)988337225",propostasFeitas=[],propostasRecebidas=[])
+
 servidor: Servidor = Servidor()
-# listaUsuarios = [usuario,usuario]
 
 while True:
     con, cliente = servidor.tcp.accept()
@@ -48,16 +44,14 @@ while True:
             movel = MapperMovel.jsonToMovel(dicionario=dicionario)
             cpf=dicionario['cpf']
             status = servidor.criarMovel(cpf=cpf,movel = movel)
-            print(
-            "STatus"
-            )
             msg=str(status)
-            print(msg)
+           
             con.send(msg.encode())
             
         elif tipoOperacao == TipoOperacao.excluirMovel.value:
             idMovel = dicionario['idMovel']
-            status = servidor.excluirMovel(idMovel=idMovel)
+            cpf=dicionario['cpf']
+            status = servidor.excluirMovel(idMovel=idMovel,cpf=cpf)
             msg = str(status)
             con.send(msg.encode())
 
@@ -80,15 +74,57 @@ while True:
                 cont+=1
             msg =json.dumps(dicionario)
             con.send(msg.encode())
-            
-            
+        
+        elif tipoOperacao == TipoOperacao.buscarPropostasRealizadas.value:
+            # print("Entrei")
+            cpf=dicionario['cpf']
+            listaPropostas = servidor.buscarPropostasRealizadas(cpf=cpf)
+            # print("Lista propostas: ",listaPropostas)
+            dicionario={}
+            cont=0
+            while(cont!=len(listaPropostas)):
+                dicionario[str(cont)]=json.dumps(MapperProposta.propostaToJson(proposta=listaPropostas[cont]))
+                cont+=1
+            msg =json.dumps(dicionario)
+            con.send(msg.encode())
+        
+        elif tipoOperacao == TipoOperacao.buscarPropostasRecebidas.value:
+            # print("Entrei")
+            cpf=dicionario['cpf']
+            listaPropostas = servidor.buscarPropostasRecebidas(cpf=cpf)
+            # print("Lista propostas: ",listaPropostas)
+            dicionario={}
+            cont=0
+            while(cont!=len(listaPropostas)):
+                dicionario[str(cont)]=json.dumps(MapperProposta.propostaToJson(proposta=listaPropostas[cont]))
+                cont+=1
+            msg =json.dumps(dicionario)
+            con.send(msg.encode())
 
-        elif tipoOperacao == TipoOperacao.aceitarTroca:
-            pass
+        elif tipoOperacao == TipoOperacao.aceitarTroca.value: 
+            cpf=dicionario['cpf']
+            idProposta = dicionario['idProposta']
+            status=servidor.aceitarProposta(idProposta=idProposta,cpfUsuarioAlvo=cpf)
+            msg=str(status)
+            con.send(msg.encode())
 
-        elif tipoOperacao == TipoOperacao.recusarTroca:
-            pass
-    con.close()
+        elif tipoOperacao == TipoOperacao.recusarTroca.value:
+            cpf=dicionario['cpf']
+            idProposta = dicionario['idProposta']
+            status=servidor.recusarProposta(idProposta=idProposta,cpfUsuarioAlvo=cpf)
+            msg=str(status)
+            print(msg)
+            con.send(msg.encode())
+        elif tipoOperacao == TipoOperacao.proporTroca.value:
+            cpfRequisitante=dicionario['cpfRequisitante']
+            cpfRequisitado=dicionario['cpfRequisitado']
+            idMovelProposto=dicionario['idMovelProposto']
+            idMovelRequerido=dicionario['idMovelRequerido']
+            status=servidor.fazerProposta(idMovelRequerido,idMovelProposto,cpfRequisitante,cpfRequisitado)
+            msg=str(status)
+            print(msg)
+            con.send(msg.encode())
+    # con.close()
     print ('Finalizando conexão do cliente', cliente)
     
 

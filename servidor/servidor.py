@@ -31,8 +31,8 @@ class Servidor:
     def criarMovel(self,cpf:int,movel:Movel )->int:
         return inserirMovel(cpf, movel)
 
-    def excluirMovel(self,idMovel:int )->int:
-       return deletarMovel(idMovel)
+    def excluirMovel(self,idMovel:int ,cpf:int)->int:
+       return deletarMovel(idMovel,cpf=cpf)
 
     def buscarUsuario(self,cpf:int, senha:str)->Usuario:
         return buscarUsuarioBanco(cpf=cpf,senha=senha)
@@ -43,25 +43,25 @@ class Servidor:
     def alterarUsuario(self,usuario:Usuario):
         atualizaBanco(usuario)
       
-    def buscarTodosUsuarios()-> List[Usuario]:
+    def buscarTodosUsuarios(self)-> List[Usuario]:
         return listarUsuarios()
 
-    def buscarMovel(idMovel:int)->Movel:
+    def buscarMovel(self,idMovel:int)->Movel:
         return buscaMovel(idMovel)
 
-    def fazerProposta(idMovelRequirido: int, idMovelProposto: int, cpfUsuarioRequisitante:str, cpfUsuarioAlvo:str):
-        return criarProposta(idMovelRequirido, idMovelProposto, cpfUsuarioRequisitante, cpfUsuarioAlvo)
+    def fazerProposta(self,idMovelRequerido: int, idMovelProposto: int, cpfUsuarioRequisitante:str, cpfUsuarioAlvo:str):
+        return criarProposta(idMovelRequerido, idMovelProposto, cpfUsuarioRequisitante, cpfUsuarioAlvo)
 
-    def buscarPropostasRealizadas(cpf:int)-> List[Proposta]: 
+    def buscarPropostasRealizadas(self,cpf:int)-> List[Proposta]: 
         return buscaPropostaRealizada(cpf)
 
-    def buscarPropostasRecebidas(cpf:int)-> List[Proposta]:
+    def buscarPropostasRecebidas(self,cpf:int)-> List[Proposta]:
         return buscaPropostaRecebida(cpf)
         
     
-    def aceitarProposta(idMovelRequirido: int, idMovelProposto: int, cpfUsuarioRequisitante:str, cpfUsuarioAlvo:str):
-        return aceitaProposta(idMovelRequirido, idMovelProposto, cpfUsuarioRequisitante, cpfUsuarioAlvo)
+    def aceitarProposta(self,idProposta:int,cpfUsuarioAlvo:int)-> int:
+        return aceitaProposta(idProposta,cpfUsuarioAlvo=cpfUsuarioAlvo)
         
-    def recusarProposta(idMovelRequirido: int, idMovelProposto: int, cpfUsuarioRequisitante:str, cpfUsuarioAlvo:str):
-        recusaProposta(idMovelRequirido, idMovelProposto, cpfUsuarioRequisitante, cpfUsuarioAlvo)
+    def recusarProposta(self,idProposta:int,cpfUsuarioAlvo:int)->int:
+        return recusaProposta(idProposta,cpfUsuarioAlvo=cpfUsuarioAlvo)
     

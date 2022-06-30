@@ -5,9 +5,9 @@ from models.usuario import Usuario
 class Cadastro:
     def __init__(self) -> None:
         pass
-    def menu() -> int:
+    def menu(self,) -> int:
         cores = Cores()
-        cliente : Cliente = Cliente()
+        cliente:Cliente=Cliente()
         print(cores.criarTextoTela("---------- TELA DE CADASTRO ----------"))
         print()
         print("Insira os seus dados abaixo:")

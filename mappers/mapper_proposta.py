@@ -12,8 +12,9 @@ class MapperProposta:
         movelProposto = proposta.movelProposto
         movelRequerido = proposta.movelRequerido
         usuarioRequisitante = proposta.usuarioRequisitante
-        usuarioRequisitado = proposta.usuarioRequisitado 
-        dicionario ['status']= proposta.status.value
+        usuarioRequisitado = proposta.usuarioAlvo 
+        dicionario ['status']= proposta.status
+        dicionario['idProposta']=proposta.idProposta
         dicionario['movelProposto']= MapperMovel.movelToJson(movel=movelProposto)
         dicionario['movelRequerido']= MapperMovel.movelToJson(movel=movelRequerido)
         dicionario['usuarioRequisitante'] = MapperUsuario.usuarioToJson(usuario=usuarioRequisitante)
@@ -22,10 +23,11 @@ class MapperProposta:
     
     def jsonToProposta(dicionario:dict) -> Proposta:
         status=dicionario ['status']
+        idProposta = dicionario['idProposta']
         movelProposto=MapperMovel.jsonToMovel(dicionario['movelProposto'])
         movelRequerido=MapperMovel.jsonToMovel(dicionario['movelRequerido'])
         usuarioRequisitante=MapperUsuario.jsonToUsuario(dicionario['usuarioRequisitante'])
         usuarioRequisitado=MapperUsuario.jsonToUsuario(dicionario['usuarioRequisitado']) 
        
-        return Proposta(status=status,movelProposto=movelProposto,movelRequerido=movelRequerido
-        ,usuarioRequisitado=usuarioRequisitado,usuarioRequisitante=usuarioRequisitante)
+        return Proposta(idProposta=idProposta,status=status,movelProposto=movelProposto,movelRequerido=movelRequerido
+        ,usuarioAlvo=usuarioRequisitado,usuarioRequisitante=usuarioRequisitante)

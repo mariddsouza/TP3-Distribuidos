@@ -1,9 +1,12 @@
 from tkinter import *
+from typing import List
 
 from sqlalchemy import null
 from cliente.cliente import Cliente
 
 from cliente.cores import Cores
+from models.movel import Movel
+from models.proposta import Proposta
 from models.status_resposta import StatusResposta
 from models.usuario import Usuario
 
@@ -11,7 +14,7 @@ from models.usuario import Usuario
 class Login:
     def __init__(self,) -> None:
         pass
-    def menu()->int:
+    def menu(self)->int:
         cores = Cores()
         print(cores.criarTextoTela("---------- TELA DE LOGIN ----------"))
         print()
@@ -24,7 +27,7 @@ class Login:
         print()
         return opcao
 
-    def login()->Usuario:
+    def login(self)->Usuario:
         cores = Cores()
         cliente = Cliente()
         cpf=(input(cores.criarTextoOpcoes("Insira seu CPF: ")))
@@ -32,6 +35,18 @@ class Login:
         usuario = cliente.buscarUsuario(cpf=cpf,senha=senha)
         print(cores.criarTextoTela("---------- FIM TELA DE LOGIN ----------"))
         return usuario
+        
+    def buscarMoveis(self,cpf:int)->List[Movel]:
+        cliente:Cliente =Cliente()
+        return cliente.buscarMoveis(cpf)
+    
+    def buscarPropostasRealizadas(self,cpf:int)->List[Proposta]:
+        cliente:Cliente =Cliente()
+        return cliente.buscarPropostasRealizadas(cpf)
+
+    def buscarPropostasRecebidas(self,cpf:int)->List[Proposta]:
+        cliente:Cliente =Cliente()
+        return cliente.buscarPropostasRecebidas(cpf)
         
 
         
