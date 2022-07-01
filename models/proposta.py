@@ -9,7 +9,8 @@ class StatusProposta(Enum):
     Recusado=-1
 
 class Proposta:
-    def __init__(self,idProposta:int,usuarioRequisitante: Usuario, usuarioAlvo: Usuario, movelProposto:Movel,movelRequerido:Movel, status:int) -> None:
+    def __init__(self,idProposta:int,usuarioRequisitante: Usuario, 
+        usuarioAlvo: Usuario, movelProposto:Movel,movelRequerido:Movel, status:int) -> None:
         self.idProposta:int = idProposta
         self.usuarioRequisitante: Usuario = usuarioRequisitante
         self.usuarioAlvo: Usuario = usuarioAlvo

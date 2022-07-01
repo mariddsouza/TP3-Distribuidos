@@ -3,10 +3,12 @@
 ## Executando 
 Abra um prompt de comando e execute o servidor.
 ````sh
-python servidor.py 
+python mainServidor.py 
 ````
 Depois abra um novo prompt de comando e execute o cliente.
 ````sh
-python cliente.py 
+python mainCliente.py 
 ````
-Entre com mensagens no cliente e observe as mensagens chegando no servidor, para sair pressione CTRL+X. 
+## Requisitos
+- Python 3
+- SQLite 3

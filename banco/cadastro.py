@@ -7,7 +7,7 @@ from sqlite3 import Error
 from typing import List
 from unittest import result
 
-from sqlalchemy import false
+#from sqlalchemy import false
 from models.status_resposta import StatusResposta
 sys.path.append(os.path.abspath('./'))
 from models.usuario import Usuario

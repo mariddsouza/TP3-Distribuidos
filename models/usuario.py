@@ -7,3 +7,4 @@ class Usuario:
         self.moveis: list = moveis
         self.propostasFeitas: list = propostasFeitas
         self.propostasRecebidas: list = propostasRecebidas
+
