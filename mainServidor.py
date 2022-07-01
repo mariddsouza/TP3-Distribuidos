@@ -1,4 +1,3 @@
-#Servidor TCP
 import json
 from mailbox import NotEmptyError
 from mappers.mapper_movel import MapperMovel
@@ -23,7 +22,6 @@ while True:
         if tipoOperacao==TipoOperacao.buscarUsuario.value:
             usuario = servidor.buscarUsuario(senha=dicionario['senha'],cpf=dicionario['cpf'])
             if usuario is not None:
-                # print("Entrei")
                 msg =json.dumps(MapperUsuario.usuarioToJson(usuario=usuario))
                 con.send(msg.encode())
             else:
@@ -76,10 +74,8 @@ while True:
             con.send(msg.encode())
         
         elif tipoOperacao == TipoOperacao.buscarPropostasRealizadas.value:
-            # print("Entrei")
             cpf=dicionario['cpf']
             listaPropostas = servidor.buscarPropostasRealizadas(cpf=cpf)
-            # print("Lista propostas: ",listaPropostas)
             dicionario={}
             cont=0
             while(cont!=len(listaPropostas)):
@@ -89,10 +85,8 @@ while True:
             con.send(msg.encode())
         
         elif tipoOperacao == TipoOperacao.buscarPropostasRecebidas.value:
-            # print("Entrei")
             cpf=dicionario['cpf']
             listaPropostas = servidor.buscarPropostasRecebidas(cpf=cpf)
-            # print("Lista propostas: ",listaPropostas)
             dicionario={}
             cont=0
             while(cont!=len(listaPropostas)):

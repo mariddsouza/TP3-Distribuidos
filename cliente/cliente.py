@@ -83,7 +83,6 @@ class Cliente:
         msg = self.tcp.recv(4096)
         if not msg: return None
         dicionario = json.loads(msg)
-        # print(dicionario)
         listaUsuarios= []
         for k,v in dicionario.items():
             listaUsuarios.append(MapperUsuario.jsonToUsuario(json.loads(v)))
@@ -96,13 +95,10 @@ class Cliente:
         dicionario['cpf']=cpf
         dicionario['tipoOperacao']=TipoOperacao.buscarPropostasRealizadas.value
         msg = json.dumps(dicionario)
-        # print("Mensagem enviada:", msg)
         self.tcp.send(msg.encode())
         msg = self.tcp.recv(4096)
-        # print("Mensagem recebida:", msg)
         if not msg: return None
         dicionario = json.loads(msg)
-        # print(dicionario)
         listaPropostas= []
         for k,v in dicionario.items():
             listaPropostas.append(MapperProposta.jsonToProposta(json.loads(v)))
@@ -115,13 +111,10 @@ class Cliente:
         dicionario['cpf']=cpf
         dicionario['tipoOperacao']=TipoOperacao.buscarPropostasRecebidas.value
         msg = json.dumps(dicionario)
-        # print("Mensagem enviada:", msg)
         self.tcp.send(msg.encode())
         msg = self.tcp.recv(4096)
-        # print("Mensagem recebida:", msg)
         if not msg: return None
         dicionario = json.loads(msg)
-        # print(dicionario)
         listaPropostas= []
         for k,v in dicionario.items():
             listaPropostas.append(MapperProposta.jsonToProposta(json.loads(v)))
@@ -135,9 +128,7 @@ class Cliente:
         dicionario['cpf']=cpf
         msg=json.dumps(dicionario)
         self.tcp.send(msg.encode())
-        print("Passei")
         msg=self.tcp.recv(4096)
-        print("Passei dnv")
         msg=msg.decode()
         if not msg: return StatusResposta.falha.value
         self.tcp.close()

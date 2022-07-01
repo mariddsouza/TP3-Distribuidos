@@ -1,7 +1,5 @@
-from tkinter import *
 from typing import List
 
-from sqlalchemy import null
 from cliente.cliente import Cliente
 
 from cliente.cores import Cores
