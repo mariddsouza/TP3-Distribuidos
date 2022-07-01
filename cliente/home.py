@@ -120,12 +120,7 @@ class Home:
         print("Insira o ID da proposta abaixo:")
         id = input(cores.criarTextoOpcoes("ID da proposta: "))
         print()
-        status=cliente.aceitarProposta(cpfUsuario=cpfUsuario,idProposta=id)
-        if status == StatusResposta.sucesso.value:
-            print(cores.criarTextoSucesso("Proposta aceita com sucesso!"))
-        else:
-            print(cores.criarTextoErro("Erro ao aceitar proposta."))
-        print()
+        cliente.aceitarProposta(cpfUsuario=cpfUsuario,idProposta=id)
     
     def recusarProposta(self,cpfUsuario:int):
         cores = Cores()
@@ -134,12 +129,7 @@ class Home:
         print("Insira o ID da proposta abaixo:")
         id = input(cores.criarTextoOpcoes("ID da proposta: "))
         print()
-        status=cliente.recusarProposta(cpfUsuario=cpfUsuario,idProposta=id)
-        if status == StatusResposta.sucesso.value:
-            print(cores.criarTextoSucesso("Proposta recusada com sucesso!"))
-        else:
-            print(cores.criarTextoErro("Erro ao recusar proposta."))
-        print()
+        cliente.recusarProposta(cpfUsuario=cpfUsuario,idProposta=id)
 
     def mostrarMoveisDisponiveisEscambo(self,usuarios:List[Usuario],cpf:int):
         cores = Cores()

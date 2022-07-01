@@ -6,6 +6,8 @@ import os
 from sqlite3 import Error
 from typing import List
 from unittest import result
+
+from sqlalchemy import false
 from models.status_resposta import StatusResposta
 sys.path.append(os.path.abspath('./'))
 from models.usuario import Usuario
@@ -23,7 +25,7 @@ def criarBanco():
 def ConexaoBanco():
     con=None
     try:
-        con=sqlite3.connect('UserCadastro.bd')
+        con=sqlite3.connect('UserCadastro.bd',check_same_thread=False)
     except Error as ex:
         print(ex)
     return con
@@ -107,7 +109,6 @@ def listarUsuarios()-> List[Usuario]:
     vsql="SELECT * FROM Usuario ;"
     usuarios = []
     result = ExecutaSQL(vcon,vsql).fetchall()
-    print(result)
     for usuario in result:
         cpf=int(usuario[0])
         usuarios.append( Usuario(nome=usuario[1],senha=usuario[2],cpf=cpf,))
@@ -138,7 +139,6 @@ def buscaPropostaRealizada(cpf:int)->List[Proposta]:
     propostas=[]
     vsql="SELECT * FROM Proposta WHERE usuarioRequisitante == '"+str(cpf)+"';"
     result= ExecutaSQL(vcon,vsql).fetchall()
-    print(result)
     for proposta in result:
         usuarioRequisitante = buscarUsuarioBancoCpf(proposta[0])
         usuarioRequisitado = buscarUsuarioBancoCpf(proposta[1])
@@ -168,7 +168,6 @@ def buscaPropostaRecebida(cpf:int):
 
 def aceitaProposta(idProposta:int,cpfUsuarioAlvo:int)->int:
     try:
-        print(idProposta,cpfUsuarioAlvo)
 
         proposta = buscaProposta(idProposta=idProposta)
         
@@ -215,33 +214,6 @@ def updateMovelCpf(idMovel:int,cpf:int):
 
 
     
-#----------TESTE PARA O BANCO----------#
-if __name__ == "__main__":
-    usuario1 = Usuario("Mariana", "senha", 380033,
-                 "moveis", [], []) 
-    usuario2 = Usuario("jao", "senha", 3506,
-    "moveis", [], []) 
-
-    movel1 = Movel("cadeira", 10, "meu movel",2)
-    movel2 = Movel("mesa", 45, "meu movel",3)
-
-    proposta = Proposta(usuario1, usuario2, movel1, movel2, 0)
-
-    #print(inserirMovel(str(usuario1.cpf),movel1))
-    #deletarMovel(1)
-    #print(listarUsuarios())
-    #print(inserirUsuario(usuario1))
-    #criarProposta(proposta.moveisRequeridos.id,proposta.moveisPropostos.id,proposta.usuarioRequisitante.cpf,proposta.usuarioAlvo.cpf)
-    #print((buscarBanco(str(usuario.cpf))[0]))
-    #atualizaBanco(usuario)
-    #listandoBanco()
-    #print(buscaMovel(4))
-    #print(buscaPropostaRealizada(380033))
-    #print(buscaPropostaRecebida(3506))
-    #aceitaProposta(0 , 0, '380033', '3506')
-    #recusaProposta(0 , 0, '380033', '3506')
-
-    #criarBanco()
 
 
 

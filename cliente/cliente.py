@@ -26,9 +26,8 @@ class Cliente:
         dicionario: dict = MapperUsuario.usuarioToJson(usuario=usuario)
         dicionario['tipoOperacao']=TipoOperacao.criarUsuario.value
         msg=json.dumps(dicionario)
-        self.tcp.send(msg.encode())
-        msg=self.tcp.recv(4096)
-        msg=msg.decode()
+        self.enviarMensagem(msg=msg)
+        msg=self.lerMensagem()
         if not msg: return StatusResposta.falha.value
         self.tcp.close()
         return int(msg)
@@ -41,9 +40,9 @@ class Cliente:
         dicionario['senha']=senha
         dicionario['tipoOperacao']=TipoOperacao.buscarUsuario.value
         msg=json.dumps(dicionario)
-        self.tcp.send(msg.encode())
-        msg=self.tcp.recv(4096)
-        if msg.decode() == " ": return None
+        self.enviarMensagem(msg=msg)
+        msg=self.lerMensagem()
+        if msg == " ": return None
         msg=json.loads(msg)
         self.tcp.close()
         return MapperUsuario.jsonToUsuario(dict(msg))
@@ -54,8 +53,8 @@ class Cliente:
         dicionario['cpf']=cpf
         dicionario['tipoOperacao']=TipoOperacao.buscarMoveis.value
         msg = json.dumps(dicionario)
-        self.tcp.send(msg.encode())
-        msg = self.tcp.recv(4096)
+        self.enviarMensagem(msg=msg)
+        msg=self.lerMensagem()
         self.tcp.close()
         if not msg:
             return []
@@ -71,7 +70,7 @@ class Cliente:
         dicionario: dict = MapperUsuario.usuarioToJson(usuario=usuario)
         dicionario['tipoOperacao']=TipoOperacao.alterarUsuario.value
         msg=json.dumps(dicionario)
-        self.tcp.send(msg.encode())
+        self.enviarMensagem(msg=msg)
         self.tcp.close()
     
     def buscarTodosUsuarios(self)-> list:
@@ -79,8 +78,8 @@ class Cliente:
         dicionario = {}
         dicionario['tipoOperacao']=TipoOperacao.buscarTodosUsuarios.value
         msg = json.dumps(dicionario)
-        self.tcp.send(msg.encode())
-        msg = self.tcp.recv(4096)
+        self.enviarMensagem(msg=msg)
+        msg=self.lerMensagem()
         if not msg: return None
         dicionario = json.loads(msg)
         listaUsuarios= []
@@ -95,8 +94,8 @@ class Cliente:
         dicionario['cpf']=cpf
         dicionario['tipoOperacao']=TipoOperacao.buscarPropostasRealizadas.value
         msg = json.dumps(dicionario)
-        self.tcp.send(msg.encode())
-        msg = self.tcp.recv(4096)
+        self.enviarMensagem(msg=msg)
+        msg=self.lerMensagem()
         if not msg: return None
         dicionario = json.loads(msg)
         listaPropostas= []
@@ -111,8 +110,8 @@ class Cliente:
         dicionario['cpf']=cpf
         dicionario['tipoOperacao']=TipoOperacao.buscarPropostasRecebidas.value
         msg = json.dumps(dicionario)
-        self.tcp.send(msg.encode())
-        msg = self.tcp.recv(4096)
+        self.enviarMensagem(msg=msg)
+        msg=self.lerMensagem()
         if not msg: return None
         dicionario = json.loads(msg)
         listaPropostas= []
@@ -127,9 +126,8 @@ class Cliente:
         dicionario['tipoOperacao']=TipoOperacao.criarMovel.value
         dicionario['cpf']=cpf
         msg=json.dumps(dicionario)
-        self.tcp.send(msg.encode())
-        msg=self.tcp.recv(4096)
-        msg=msg.decode()
+        self.enviarMensagem(msg=msg)
+        msg=self.lerMensagem()
         if not msg: return StatusResposta.falha.value
         self.tcp.close()
         return int(msg)
@@ -141,9 +139,8 @@ class Cliente:
         dicionario['idMovel']=idMovel
         dicionario['cpf']=cpf
         msg=json.dumps(dicionario)
-        self.tcp.send(msg.encode())
-        msg=self.tcp.recv(4096 )
-        msg=msg.decode()
+        self.enviarMensagem(msg=msg)
+        msg=self.lerMensagem()
         if not msg: return StatusResposta.falha.value
         self.tcp.close()
         return int(msg)
@@ -155,9 +152,9 @@ class Cliente:
         dicionario['tipoOperacao']=TipoOperacao.aceitarTroca.value
         dicionario['idProposta']=idProposta
         msg=json.dumps(dicionario)
-        self.tcp.send(msg.encode())
-        msg=self.tcp.recv(4096)
-        msg=msg.decode()
+        self.enviarMensagem(msg=msg)
+        msg=self.lerMensagem()
+        msg=msg
         if not msg: return StatusResposta.falha.value
         self.tcp.close()
         return int(msg)
@@ -170,9 +167,9 @@ class Cliente:
         dicionario['tipoOperacao']=TipoOperacao.recusarTroca.value
         dicionario['idProposta']=idProposta
         msg=json.dumps(dicionario)
-        self.tcp.send(msg.encode())
-        msg=self.tcp.recv(4096)
-        msg=msg.decode()
+        self.enviarMensagem(msg=msg)
+        msg=self.lerMensagem()
+        msg=msg
         if not msg: return StatusResposta.falha.value
         self.tcp.close()
         return int(msg)
@@ -187,12 +184,31 @@ class Cliente:
         dicionario['tipoOperacao']=TipoOperacao.proporTroca.value
         dicionario['idMovelRequerido']=idMovelRequerido
         msg=json.dumps(dicionario)
-        self.tcp.send(msg.encode())
-        msg=self.tcp.recv(4096)
-        msg=msg.decode()
+        self.enviarMensagem(msg=msg)
+        msg=self.lerMensagem()
+        msg=msg
         if not msg: return StatusResposta.falha.value
         self.tcp.close()
         return int(msg)
+    
+    def lerMensagem(self)->str:
+        mensagemCompleta = ""
+        EOF = 0x05
+        while True:
+            msg = self.tcp.recv(4096)
+            if not msg: break
+            if msg[len(msg) - 1] == EOF:
+                mensagemCompleta+=str(msg[: len(msg) - 1].decode())
+                break
+            else:
+                mensagemCompleta+=str(msg.decode())
+
+        return mensagemCompleta
+
+    def enviarMensagem(self,msg:str):
+        EOF = 0x05
+        self.tcp.send(msg.encode())
+        self.tcp.send(bytearray([EOF]))
 
 
 
