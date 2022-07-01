@@ -12,7 +12,6 @@ from models.usuario import Usuario
 from models.movel import Movel
 from models.proposta import Proposta
 
-#criando o banco 
 def criarBanco():
     cursor = sqlite3.connect("UserCadastro.bd").cursor()
     sql_file = open("banco/criarBanco.sql")
@@ -21,7 +20,6 @@ def criarBanco():
     cursor.close()
 
 
-#Acessando o banco 
 def ConexaoBanco():
     con=None
     try:
@@ -47,20 +45,16 @@ def inserirUsuario(user:Usuario)->int:
         nome=user.nome
         senha=user.senha
         cpf=str(user.cpf)
-        # print("Cadastro inserido com sucesso ")
         vsql="SELECT * FROM Usuario WHERE cpf == {}".format(cpf)
         result = ExecutaSQL(vcon,vsql).fetchone()
         if(result==None):
             vsql="INSERT INTO Usuario(nome,senha,cpf)VALUES('"+nome+"','"+senha+"','"+cpf+"')"
             ExecutaSQL(vcon,vsql)
-            # vsql="SELECT * FROM Usuario ORDER BY rowid DESC LIMIT 1;"
-            # ExecutaSQL(vcon,vsql).fetchone()
             return StatusResposta.sucesso.value
         else:
             return StatusResposta.falha.value 
     except :
-        # print("entrou no errado")
-        return StatusResposta.falha.value #Erro no cadastro
+        return StatusResposta.falha.value 
        
 def inserirMovel(cpf:str, movel:Movel):
     try:
@@ -69,10 +63,6 @@ def inserirMovel(cpf:str, movel:Movel):
         descricao=movel.descricao
         vsql="INSERT INTO Movel(nome,tempoUso,descricao,Usuario_cpf) VALUES('"+nome+"','"+str(tempoUso)+"','"+descricao+"','"+str(cpf)+"');"
         ExecutaSQL(vcon,vsql)
-        #Fazer tratamento de erro 
-        #retorna o id do movel
-        # vsql="select last_insert_rowid()"
-        # ExecutaSQL(vcon,vsql).fetchone()[0]
         return  StatusResposta.sucesso.value
     except Error:
         return StatusResposta.falha.value
@@ -90,7 +80,6 @@ def deletarMovel(idMovel:int,cpf:int):
 def buscarUsuarioBanco(cpf:str,senha:str)->Usuario:
     vsql="SELECT * FROM Usuario WHERE cpf =='"+cpf+"' AND senha == '"+senha+"';"
     result=ExecutaSQL(vcon,vsql).fetchone()
-    # print(result)
     if result == None:
         return None
     else:
@@ -121,11 +110,6 @@ def listarUsuarios()-> List[Usuario]:
     print(result)
     for usuario in result:
         cpf=int(usuario[0])
-        # print(cpf)
-        # moveis = buscarMoveis(cpf=cpf)
-        # print(moveis)
-        # propostasRecebidas = buscaPropostaRecebida(cpf=cpf)
-        # propostasRealizadas = buscaPropostaRealizada(cpf=cpf)
         usuarios.append( Usuario(nome=usuario[1],senha=usuario[2],cpf=cpf,))
     return usuarios
  
@@ -153,10 +137,8 @@ def buscaMovel(idMovel:int):
 def buscaPropostaRealizada(cpf:int)->List[Proposta]:
     propostas=[]
     vsql="SELECT * FROM Proposta WHERE usuarioRequisitante == '"+str(cpf)+"';"
-    # print("vsql: ",vsql)
     result= ExecutaSQL(vcon,vsql).fetchall()
     print(result)
-    # print("Result",result)
     for proposta in result:
         usuarioRequisitante = buscarUsuarioBancoCpf(proposta[0])
         usuarioRequisitado = buscarUsuarioBancoCpf(proposta[1])
@@ -166,15 +148,12 @@ def buscaPropostaRealizada(cpf:int)->List[Proposta]:
         idProposta=proposta[5]
         propostas.append( Proposta(usuarioAlvo=usuarioRequisitado,usuarioRequisitante=usuarioRequisitante,
         idProposta=idProposta,movelProposto=movelProposto,movelRequerido=movelRequisitado,status=status))
-    # print(propostas)
     return propostas
 
 def buscaPropostaRecebida(cpf:int):
     propostas=[]
     vsql="SELECT * FROM Proposta WHERE usuarioAlvo == '"+str(cpf)+"'; "
-    # print("vsql: ",vsql)
     result= ExecutaSQL(vcon,vsql).fetchall()
-    # print("Result",result)
     for proposta in result:
         usuarioRequisitante = buscarUsuarioBancoCpf(proposta[0])
         usuarioRequisitado = buscarUsuarioBancoCpf(proposta[1])
@@ -185,7 +164,6 @@ def buscaPropostaRecebida(cpf:int):
 
         propostas.append( Proposta(usuarioAlvo=usuarioRequisitado,usuarioRequisitante=usuarioRequisitante,
         idProposta=idProposta,movelProposto=movelProposto,movelRequerido=movelRequisitado,status=status))
-    # print(propostas)
     return propostas
 
 def aceitaProposta(idProposta:int,cpfUsuarioAlvo:int)->int:
@@ -193,12 +171,7 @@ def aceitaProposta(idProposta:int,cpfUsuarioAlvo:int)->int:
         print(idProposta,cpfUsuarioAlvo)
 
         proposta = buscaProposta(idProposta=idProposta)
-        # print(str(proposta.usuarioRequisitante.cpf),proposta.movelRequerido.id)
-        # print(str(proposta.usuarioAlvo.cpf),proposta.movelProposto.id)
-        # print(proposta.movelProposto.id,proposta.usuarioRequisitante.cpf)
-        # print(proposta.movelRequerido.id,proposta.usuarioAlvo.cpf)
-        # inserirMovel(str(proposta.usuarioRequisitante.cpf),proposta.movelRequerido)
-        # inserirMovel(str(proposta.usuarioAlvo.cpf),proposta.movelProposto)
+        
         updateMovelCpf(proposta.movelRequerido.id,proposta.usuarioRequisitante.cpf)
         updateMovelCpf(proposta.movelProposto.id,proposta.usuarioAlvo.cpf)
         deletarMovel(idMovel=proposta.movelProposto.id,cpf=proposta.usuarioRequisitante.cpf)
@@ -270,7 +243,6 @@ if __name__ == "__main__":
 
     #criarBanco()
 
-    print("deu bom")
 
 
 
